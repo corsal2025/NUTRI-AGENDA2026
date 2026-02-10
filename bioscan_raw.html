@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Escaneo Bio-Holográfico Premium</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f20da6",
+                        "accent-fuchsia": "#f20da6",
+                        "accent-indigo": "#6366f1",
+                        "background-light": "#f8f5f7",
+                        "background-dark": "#05050a",
+                        "medical-indigo": "#1a1a3a",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer components {
+            .glass-card {
+                background: rgba(26, 26, 58, 0.4);
+                backdrop-filter: blur(16px);
+                border: 1px solid rgba(242, 13, 166, 0.2);
+                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            }
+            .neon-glow-primary {
+                box-shadow: 0 0 20px rgba(242, 13, 166, 0.4);
+            }
+            .neon-glow-indigo {
+                box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            }
+            .scan-line {
+                background: linear-gradient(to bottom, transparent, #f20da6, transparent);
+                height: 100%;
+                width: 2px;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                opacity: 0.6;
+            }
+            .grid-bg {
+                background-image: linear-gradient(rgba(242, 13, 166, 0.08) 1px, transparent 1px),
+                                  linear-gradient(90deg, rgba(242, 13, 166, 0.08) 1px, transparent 1px);
+                background-size: 30px 30px;
+            }
+            .circular-grid {
+                background-image: radial-gradient(circle, rgba(242, 13, 166, 0.1) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-white transition-colors duration-300">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-10 py-4 bg-background-dark/90 backdrop-blur-xl sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-primary">
+<div class="size-9 flex items-center justify-center rounded bg-primary/20 border border-primary/40">
+<span class="material-symbols-outlined text-primary">biotech</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-widest">BIO-HOLOGRÁFICO</h2>
+</div>
+<nav class="hidden lg:flex items-center gap-8">
+<a class="text-white/60 hover:text-primary text-sm font-medium transition-colors" href="#">Panel de Control</a>
+<a class="text-white text-sm font-medium border-b-2 border-primary pb-1" href="#">Escaneos de Pacientes</a>
+<a class="text-white/60 hover:text-primary text-sm font-medium transition-colors" href="#">Analíticas</a>
+<a class="text-white/60 hover:text-primary text-sm font-medium transition-colors" href="#">Informes</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<div class="hidden md:flex flex-col min-w-40 max-w-64">
+<div class="flex w-full items-stretch rounded-lg h-10 glass-card">
+<div class="text-primary/60 flex items-center justify-center pl-3">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="w-full bg-transparent border-none focus:ring-0 text-sm text-white placeholder:text-white/30 pl-2" placeholder="Buscar ID de paciente..." value=""/>
+</div>
+</div>
+<button class="flex min-w-[160px] items-center gap-2 justify-center rounded-lg h-10 px-4 bg-primary text-white text-xs font-bold uppercase tracking-widest neon-glow-primary">
+<span class="material-symbols-outlined text-sm">sensors</span>
+<span>Sistema Activo</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/50" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAUJ7lIvgKwSVSR1hWyFya0Cbyn9nx9NVFXGdqZ_RastA0Qbvw9CEFoJ0jMsI-LVc_mMUxjnYwAlUfUI-CH2NyYFbGKSFnEjUF7a4cV5CjojrA4hci5a5KBorejiwn-59WM0tEiuUeAR9ULS8Y20NWWas_ooLfzy3g5xFAWj1cJytV5IhEi-I9bARwNEq3wm3rrG-J1M7fvZkPQPw5HLY09bESPJda_eDY0DAVJ_8ZUxWHGP6xC-I4laeKauGpt2aqOn3Wi6fALGToL");'></div>
+</div>
+</header>
+<main class="flex-1 flex flex-col p-6 gap-6 relative overflow-hidden">
+<div class="absolute inset-0 grid-bg pointer-events-none opacity-40"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-primary/5 rounded-full blur-[140px] pointer-events-none"></div>
+<div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent-indigo/10 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 z-10">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-primary text-xs font-bold uppercase tracking-[0.3em]">Transmisión Biométrica en Vivo</span>
+</div>
+<h1 class="text-white text-4xl font-bold tracking-tight">Análisis Anatómico: <span class="text-white/60">Paciente #8842-X</span></h1>
+<p class="text-white/40 text-sm mt-1">Telemetría bio-holográfica activa en tiempo real | V 2.4.0 Alta Resolución</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-all text-sm font-medium">
+<span class="material-symbols-outlined text-sm">history</span> Historial
+                </button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 rounded-lg transition-all text-sm font-bold">
+<span class="material-symbols-outlined text-sm">ios_share</span> Exportar Datos
+                </button>
+</div>
+</div>
+<div class="flex-1 grid grid-cols-12 gap-6 z-10">
+<div class="col-span-12 lg:col-span-3 flex flex-col gap-4">
+<div class="glass-card rounded-xl p-5 flex flex-col gap-4 border-l-4 border-l-accent-fuchsia">
+<div class="flex justify-between items-start">
+<span class="text-white/70 text-xs font-bold uppercase tracking-widest">Masa Grasa</span>
+<span class="material-symbols-outlined text-primary">monitoring</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-4xl font-bold text-white">14.5%</span>
+<span class="text-red-400 text-sm font-medium pb-1 flex items-center">
+<span class="material-symbols-outlined text-sm">arrow_drop_down</span> 0.5%
+                        </span>
+</div>
+<div class="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/10">
+<div class="bg-primary h-full w-[14.5%] neon-glow-primary"></div>
+</div>
+<p class="text-white/40 text-[10px] leading-tight uppercase tracking-tighter">Rango Óptimo: 12% - 17% según Relación Edad/Altura</p>
+</div>
+<div class="glass-card rounded-xl p-5 flex flex-col gap-4 border-l-4 border-l-accent-indigo">
+<div class="flex justify-between items-start">
+<span class="text-white/70 text-xs font-bold uppercase tracking-widest">Masa Muscular</span>
+<span class="material-symbols-outlined text-accent-indigo">fitness_center</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-4xl font-bold text-white">68.2<span class="text-lg font-normal text-white/60">kg</span></span>
+<span class="text-green-400 text-sm font-medium pb-1 flex items-center">
+<span class="material-symbols-outlined text-sm">arrow_drop_up</span> 1.2%
+                        </span>
+</div>
+<div class="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/10">
+<div class="bg-accent-indigo h-full w-[72%] neon-glow-indigo"></div>
+</div>
+<p class="text-white/40 text-[10px] leading-tight uppercase tracking-tighter">Distribución de Tejido Magro: Excelente</p>
+</div>
+<div class="glass-card rounded-xl p-5 flex flex-col gap-4 border-l-4 border-l-white/20">
+<div class="flex justify-between items-start">
+<span class="text-white/70 text-xs font-bold uppercase tracking-widest">Masa Ósea</span>
+<span class="material-symbols-outlined text-slate-400">skeleton</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-4xl font-bold text-white">3.1<span class="text-lg font-normal text-white/60">kg</span></span>
+<span class="text-green-400 text-sm font-medium pb-1 flex items-center">
+<span class="material-symbols-outlined text-sm">check_circle</span> estable
+                        </span>
+</div>
+<div class="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/10">
+<div class="bg-slate-400 h-full w-[85%]"></div>
+</div>
+<p class="text-white/40 text-[10px] leading-tight uppercase tracking-tighter">Índice de Mineralización: 0.98 Z-Score</p>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-6 glass-card rounded-2xl relative flex items-center justify-center overflow-hidden min-h-[550px] group circular-grid">
+<div class="absolute top-6 left-6 flex flex-col gap-1 pointer-events-none font-mono">
+<div class="text-[10px] text-primary/80">LAT: 34.0522° N</div>
+<div class="text-[10px] text-primary/80">LONG: 118.2437° W</div>
+<div class="text-[10px] text-accent-indigo">ESCANEANDO CAPAS 01-14...</div>
+</div>
+<div class="absolute top-6 right-6 flex flex-col gap-1 pointer-events-none items-end font-mono">
+<div class="text-[10px] text-white/60 uppercase">Estado del Núcleo</div>
+<div class="flex gap-0.5">
+<div class="w-2 h-1 bg-primary"></div>
+<div class="w-2 h-1 bg-primary"></div>
+<div class="w-2 h-1 bg-primary"></div>
+<div class="w-2 h-1 bg-primary/20"></div>
+</div>
+</div>
+<div class="absolute bottom-6 right-6 pointer-events-none text-right">
+<div class="text-[10px] font-mono text-white/40 tracking-widest">RENDERIZANDO HOLOGRAMA... 98.4%</div>
+</div>
+<div class="scan-line z-20"></div>
+<div class="relative w-full h-full flex items-center justify-center p-8">
+<img alt="Holograma de silueta humana 3D" class="max-h-full max-w-full mix-blend-screen opacity-90 filter drop-shadow-[0_0_30px_rgba(242,13,166,0.3)] contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3uUcnyTriPlFlJlmt3CDcQ0EllOqj8TMcSaO57vh09se1VtF7449ztSu0WCpl6lHxt7KkK0p1yzqDotH1PZ5BiPbqVXfO9G11zJm_nEYGgIDlbiFH62X_1UVQ_cn8NoXEvskFpY1WJWM24DgRYemi3TL2EEpseuRZF8PfATBBaNAS2j_ujXSKWhSWf8K_bGU8pJfheM34layDoRrAut24VCec5AIqG_IvfAGor7Rc1fvxFJvQYCqV0zk5SQJa9VVNUPK73o3KPbNf"/>
+<div class="absolute top-[25%] left-[48%] size-5">
+<div class="absolute inset-0 bg-primary rounded-full animate-ping opacity-60"></div>
+<div class="relative size-full bg-primary rounded-full border-2 border-white shadow-[0_0_15px_#f20da6]"></div>
+<div class="absolute left-7 top-0 glass-card px-2.5 py-1.5 rounded-lg border-primary/40 whitespace-nowrap">
+<span class="text-[10px] font-bold text-white uppercase tracking-wider">Ritmo Cardíaco: 72 PPM</span>
+</div>
+</div>
+<div class="absolute top-[45%] left-[42%] size-4">
+<div class="absolute inset-0 bg-accent-indigo rounded-full animate-ping opacity-60"></div>
+<div class="relative size-full bg-accent-indigo rounded-full border-2 border-white shadow-[0_0_15px_#6366f1]"></div>
+</div>
+<div class="absolute bottom-[30%] left-[55%] size-4">
+<div class="absolute inset-0 bg-accent-fuchsia rounded-full animate-ping opacity-60"></div>
+<div class="relative size-full bg-accent-fuchsia rounded-full border-2 border-white"></div>
+</div>
+</div>
+<div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 p-2.5 glass-card rounded-full border border-white/20">
+<button class="size-11 flex items-center justify-center rounded-full bg-primary text-white neon-glow-primary">
+<span class="material-symbols-outlined">rotate_right</span>
+</button>
+<button class="size-11 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+<button class="size-11 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">layers</span>
+</button>
+<button class="size-11 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+<div class="flex flex-col gap-2">
+<h3 class="text-white/60 text-xs font-bold uppercase tracking-[0.2em] px-2 mb-2">Módulos de Escaneo</h3>
+<div class="flex flex-col gap-2">
+<button class="flex items-center gap-4 w-full p-3.5 rounded-xl bg-primary/15 border border-primary/40 text-primary transition-all">
+<span class="material-symbols-outlined text-xl">person</span>
+<span class="text-sm font-bold tracking-wide">Análisis Corporal Completo</span>
+</button>
+<button class="flex items-center gap-4 w-full p-3.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 text-white/60 transition-colors">
+<span class="material-symbols-outlined text-xl">neurology</span>
+<span class="text-sm font-medium">Vías Neuronales</span>
+</button>
+<button class="flex items-center gap-4 w-full p-3.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 text-white/60 transition-colors">
+<span class="material-symbols-outlined text-xl">cardiology</span>
+<span class="text-sm font-medium">Sistema Circulatorio</span>
+</button>
+<button class="flex items-center gap-4 w-full p-3.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 text-white/60 transition-colors">
+<span class="material-symbols-outlined text-xl">nutrition</span>
+<span class="text-sm font-medium">Datos Metabólicos</span>
+</button>
+</div>
+</div>
+<div class="glass-card rounded-xl p-5 flex flex-col gap-6">
+<h3 class="text-white/60 text-xs font-bold uppercase tracking-widest">Hidratación y Recuperación</h3>
+<div class="flex justify-around items-center">
+<div class="relative size-24 flex items-center justify-center">
+<svg class="size-full -rotate-90 filter drop-shadow-[0_0_8px_rgba(242,13,166,0.5)]">
+<circle class="text-white/5" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="60.2" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-lg font-bold">76%</span>
+<span class="text-[8px] uppercase font-black text-white/40">Agua</span>
+</div>
+</div>
+<div class="relative size-24 flex items-center justify-center">
+<svg class="size-full -rotate-90 filter drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]">
+<circle class="text-white/5" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-accent-indigo" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="120.6" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-lg font-bold">52%</span>
+<span class="text-[8px] uppercase font-black text-white/40">Descanso</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3 pt-2 border-t border-white/10">
+<div class="flex justify-between items-center text-xs">
+<span class="text-white/60">Edad Metabólica</span>
+<span class="text-white font-bold">28 Años</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-white/60">TMB (BMR)</span>
+<span class="text-white font-bold">1,840 kcal</span>
+</div>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl bg-primary hover:bg-primary/80 text-white font-bold uppercase tracking-[0.25em] text-xs transition-all flex items-center justify-center gap-3 neon-glow-primary">
+<span class="material-symbols-outlined">play_circle</span>
+                    Iniciar Secuencia de Escaneo
+                </button>
+</div>
+</div>
+<footer class="h-12 glass-card rounded-lg flex items-center px-6 gap-8 overflow-hidden z-10 border-white/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary">schedule</span>
+<span class="text-[10px] font-mono text-white/60">T+ 00:04:22:12</span>
+</div>
+<div class="h-4 w-px bg-white/20"></div>
+<div class="flex-1 flex gap-10 items-center overflow-hidden">
+<div class="flex items-center gap-2 whitespace-nowrap">
+<span class="text-[10px] uppercase font-bold text-white/40 tracking-wider">PROCESADOR:</span>
+<span class="text-[10px] font-mono text-green-400">12% CARGA</span>
+</div>
+<div class="flex items-center gap-2 whitespace-nowrap">
+<span class="text-[10px] uppercase font-bold text-white/40 tracking-wider">LATENCIA HOLO:</span>
+<span class="text-[10px] font-mono text-green-400">0.02ms</span>
+</div>
+<div class="flex items-center gap-2 whitespace-nowrap">
+<span class="text-[10px] uppercase font-bold text-white/40 tracking-wider">BIO-ENLACE:</span>
+<span class="text-[10px] font-mono text-primary uppercase">Cifrado de Alto Nivel</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-[10px] text-white/40 uppercase font-bold tracking-[0.2em] hidden md:block">Próximo Escaneo: 14:00 GMT</span>
+<div class="flex gap-1">
+<button class="size-6 rounded flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors"><span class="material-symbols-outlined text-xs">chevron_left</span></button>
+<button class="size-6 rounded flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors"><span class="material-symbols-outlined text-xs">chevron_right</span></button>
+</div>
+</div>
+</footer>
+</main>
+</div>
+</div>
+
+</body></html>

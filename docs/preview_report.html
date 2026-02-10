@@ -1,0 +1,137 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; padding: 40px; color: #374151; max-width: 800px; margin: 0 auto; background: white; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e5e7eb; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo { font-size: 28px; font-weight: 800; color: #0D9488; }
+        .report-meta { text-align: right; font-size: 0.9em; color: #6b7280; }
+        
+        .score-section { text-align: center; margin-bottom: 40px; background: #f0f9ff; padding: 30px; border-radius: 16px; }
+        .score-val { font-size: 64px; font-weight: 900; color: #0284c7; line-height: 1; }
+        .score-label { font-size: 18px; color: #0284c7; font-weight: 500; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        
+        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #111827; border-left: 4px solid #0D9488; padding-left: 10px; }
+        
+        .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+        .metric-name { font-weight: 500; }
+        .metric-value { font-family: monospace; font-size: 1.1em; font-weight: 600; }
+        .badge { padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; color: white; min-width: 80px; text-align: center; }
+
+        .control-panel { background: #f9fafb; padding: 20px; border-radius: 12px; }
+        .control-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .control-val { font-weight: 700; }
+
+        .footer { margin-top: 60px; text-align: center; font-size: 12px; color: #9ca3af; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="logo">NutriAgenda</div>
+        <div class="report-meta">
+          ID: raul<br>
+          Fecha: 16/01/2026 13:27:32<br>
+          Mujer | 41 años | 184cm
+        </div>
+      </div>
+
+      <div class="score-section">
+        <div class="score-val">90</div>
+        <div class="score-label">Puntuación Corporal / 100</div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <div class="section-title">Análisis de Composición</div>
+          
+            <div class="metric-row">
+              <span class="metric-name">Peso</span>
+              <div style="text-align: right">
+                <div class="metric-value">106.6 kg</div>
+              </div>
+              <span class="badge" style="background-color: #ef4444">Alto</span>
+            </div>
+          
+            <div class="metric-row">
+              <span class="metric-name">Grasa Corporal</span>
+              <div style="text-align: right">
+                <div class="metric-value">29.3 %</div>
+              </div>
+              <span class="badge" style="background-color: #ef4444">Alto</span>
+            </div>
+          
+            <div class="metric-row">
+              <span class="metric-name">Músculo Esquelético</span>
+              <div style="text-align: right">
+                <div class="metric-value">44.7 kg</div>
+              </div>
+              <span class="badge" style="background-color: #22c55e">Excelente</span>
+            </div>
+
+            <div class="metric-row">
+              <span class="metric-name">Proteína</span>
+              <div style="text-align: right">
+                <div class="metric-value">15.5 %</div>
+              </div>
+              <span class="badge" style="background-color: #22c55e">Excelente</span>
+             </div>
+             
+             <div class="metric-row">
+              <span class="metric-name">Agua</span>
+              <div style="text-align: right">
+                <div class="metric-value">56.7 %</div>
+              </div>
+              <span class="badge" style="background-color: #22c55e">Excelente</span>
+             </div>
+        </div>
+
+        <div>
+           <div class="section-title">Control de Peso</div>
+           <div class="control-panel">
+             <div class="control-item">
+               <span>Peso Objetivo</span>
+               <span class="control-val">93.7 kg</span>
+             </div>
+             <div class="control-item">
+               <span>Control Peso</span>
+               <span class="control-val" style="color: #22c55e">
+                 -12.9 kg
+               </span>
+             </div>
+             <div class="control-item">
+               <span>Control Grasa</span>
+               <span class="control-val" style="color: #22c55e">
+                 -12.9 kg
+               </span>
+             </div>
+             <div class="control-item">
+               <span>Control Músculo</span>
+               <span class="control-val" style="color: #22c55e">
+                 +0.0 kg
+               </span>
+             </div>
+           </div>
+
+           <div class="section-title" style="margin-top: 30px">Análisis de Obesidad</div>
+           <div class="control-panel">
+             <div class="control-item">
+               <span>IMC</span>
+               <span class="control-val">31.5</span>
+             </div>
+             <div class="control-item">
+               <span>% Grasa Corporal</span>
+               <span class="control-val">27.5%</span>
+             </div>
+           </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        Generado por NutriAgenda Pro • Documento Clínico Confidencial
+      </div>
+    </body>
+    </html>

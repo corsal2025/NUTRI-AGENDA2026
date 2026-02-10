@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ajustes y Perfil Profesional | Dr. Nutricionista</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f20da6",
+                        "cyber-cyan": "#00ffff",
+                        "background-light": "#f8f5f7",
+                        "background-dark": "#05050a",
+                        "glass": "rgba(255, 255, 255, 0.05)",
+                        "glass-border": "rgba(255, 255, 255, 0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .neon-glow-primary {
+            box-shadow: 0 0 15px rgba(242, 13, 166, 0.4);
+        }
+        .neon-ring {
+            border: 2px solid #f20da6;
+            box-shadow: 0 0 10px #f20da6, inset 0 0 10px #f20da6;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="w-72 flex-shrink-0 border-r border-glass-border bg-background-light dark:bg-[#0a0a14] flex flex-col">
+<div class="p-8 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center neon-glow-primary">
+<span class="material-symbols-outlined text-white">biotech</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-none">DR. NUTRI</h1>
+<p class="text-[10px] uppercase tracking-widest text-primary font-bold mt-1">Premium Dashboard</p>
+</div>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 text-primary border border-primary/20" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-medium">Perfil Profesional</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">shield_lock</span>
+<span class="font-medium">Seguridad</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">settings_suggest</span>
+<span class="font-medium">Preferencias</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="font-medium">Notificaciones</span>
+</a>
+</nav>
+<div class="p-6 mt-auto border-t border-glass-border">
+<button class="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-red-500 hover:bg-red-500/10 transition-all">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-medium">Cerrar Sesión</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark relative">
+<!-- Header Bar -->
+<header class="sticky top-0 z-10 glass-card border-x-0 border-t-0 px-8 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Ajustes de Usuario</h2>
+<span class="px-2 py-0.5 rounded bg-cyber-cyan/10 text-cyber-cyan text-[10px] font-bold uppercase tracking-wider border border-cyber-cyan/30">V.3.4.0</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="bg-white/5 border-glass-border rounded-lg pl-9 pr-4 py-2 text-sm focus:ring-primary focus:border-primary transition-all w-64" placeholder="Buscar ajuste..." type="text"/>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg font-bold text-sm transition-all neon-glow-primary">
+                        Guardar Cambios
+                    </button>
+</div>
+</header>
+<div class="p-8 max-w-5xl mx-auto space-y-10">
+<!-- Profile Section -->
+<section>
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+<h3 class="text-lg font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">Perfil del Especialista</h3>
+</div>
+<div class="glass-card rounded-2xl p-8 flex flex-col md:flex-row gap-10">
+<!-- Avatar Column -->
+<div class="flex flex-col items-center gap-4">
+<div class="relative">
+<div class="w-40 h-40 rounded-full overflow-hidden neon-ring p-1">
+<div class="w-full h-full rounded-full bg-cover bg-center" data-alt="Portrait of a professional nutritionist in medical attire" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAyc0GnyGV-e8Z6emeCUC2_-ySh_Vnn4ddHh_SXDtydux0mFwvJnwmNGsOPIPRjbuEQkYmItsbAVMBtNR0wnYgzv-cI_ATNPEBqM45KmX0L5_A0ervC3es3Cy-Ja96bKqFsFjr1PIIrt4dLo9ONFuLEJgl6Xc03fpd3HNVFA-6N4_o9WRtx4REZGHdSBQ83_lDZ_RjlWtYBUAhu_qJs2kG_sSjLwHzrS5mSNsIcbt3c-EUKmBdfUkiQnr7-O149fn4iLEGbUo2GFgs-')"></div>
+</div>
+<button class="absolute bottom-1 right-1 bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center border-4 border-background-dark hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">photo_camera</span>
+</button>
+</div>
+<div class="text-center">
+<p class="text-xs text-slate-400 font-medium">PNG o JPG (Max. 5MB)</p>
+<p class="text-xs text-cyber-cyan mt-1 font-bold">Estado: Verificado</p>
+</div>
+</div>
+<!-- Info Grid -->
+<div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-slate-500">Nombre Completo</label>
+<input class="w-full bg-white/5 border-glass-border rounded-lg px-4 py-3 focus:border-primary focus:ring-primary outline-none" type="text" value="Lic. Marina Estévez"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-slate-500">Matrícula Profesional</label>
+<input class="w-full bg-white/5 border-glass-border rounded-lg px-4 py-3 focus:border-primary focus:ring-primary outline-none" type="text" value="MP-49203"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="text-xs font-bold uppercase tracking-wider text-slate-500">Especialidad Clínica</label>
+<input class="w-full bg-white/5 border-glass-border rounded-lg px-4 py-3 focus:border-primary focus:ring-primary outline-none" type="text" value="Nutrición Oncológica y Deportiva de Alto Rendimiento"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="text-xs font-bold uppercase tracking-wider text-slate-500">Biografía Profesional</label>
+<textarea class="w-full bg-white/5 border-glass-border rounded-lg px-4 py-3 focus:border-primary focus:ring-primary outline-none" rows="3">Especialista con más de 12 años de experiencia en el diseño de planes nutricionales personalizados mediante análisis genómico.</textarea>
+</div>
+</div>
+</div>
+</section>
+<!-- Security Section -->
+<section>
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary">security</span>
+<h3 class="text-lg font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">Seguridad &amp; Acceso</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- 2FA Card -->
+<div class="glass-card rounded-2xl p-6 flex items-start gap-4">
+<div class="p-3 rounded-lg bg-cyber-cyan/10 text-cyber-cyan">
+<span class="material-symbols-outlined">key</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-bold text-white">Autenticación (2FA)</h4>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<p class="text-sm text-slate-400">Protege tu cuenta con un segundo paso de verificación mediante SMS o App.</p>
+</div>
+</div>
+<!-- Login History Card -->
+<div class="glass-card rounded-2xl p-6 md:row-span-2">
+<h4 class="font-bold text-white mb-4">Historial de Inicios</h4>
+<div class="space-y-4">
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-cyber-cyan text-sm">laptop_mac</span>
+<div>
+<p class="font-medium">MacBook Pro - Chrome</p>
+<p class="text-[10px] text-slate-500">Buenos Aires, AR • Hoy 10:45</p>
+</div>
+</div>
+<span class="text-[10px] bg-cyber-cyan/10 text-cyber-cyan px-2 py-0.5 rounded">Actual</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-500 text-sm">smartphone</span>
+<div>
+<p class="font-medium">iPhone 15 Pro</p>
+<p class="text-[10px] text-slate-500">Buenos Aires, AR • Ayer 21:30</p>
+</div>
+</div>
+<button class="text-[10px] text-red-500 hover:underline">Cerrar</button>
+</div>
+</div>
+<button class="w-full mt-6 py-2 border border-glass-border rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-white/5 transition-colors">
+                                Ver todo el historial
+                            </button>
+</div>
+<!-- Change Password Form -->
+<div class="glass-card rounded-2xl p-6">
+<h4 class="font-bold text-white mb-4">Actualizar Contraseña</h4>
+<div class="space-y-3">
+<input class="w-full bg-white/5 border-glass-border rounded-lg px-4 py-2 text-sm" placeholder="Contraseña Actual" type="password"/>
+<input class="w-full bg-white/5 border-glass-border rounded-lg px-4 py-2 text-sm" placeholder="Nueva Contraseña" type="password"/>
+<button class="w-full py-2 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-bold transition-all">Cambiar Password</button>
+</div>
+</div>
+</div>
+</section>
+<!-- System Preferences -->
+<section class="pb-20">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-primary">tune</span>
+<h3 class="text-lg font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">Preferencias del Sistema</h3>
+</div>
+<div class="glass-card rounded-2xl divide-y divide-glass-border">
+<div class="p-6 flex items-center justify-between">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-slate-400">dark_mode</span>
+<div>
+<p class="font-bold text-white">Modo Cyber-Dark</p>
+<p class="text-sm text-slate-500">Activar el modo oscuro de alta fidelidad.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="p-6 flex items-center justify-between">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-slate-400">volume_up</span>
+<div>
+<p class="font-bold text-white">Sonidos de Interfaz</p>
+<p class="text-sm text-slate-500">Alertas auditivas para nuevas citas y mensajes.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="p-6 flex items-center justify-between">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-slate-400">language</span>
+<div>
+<p class="font-bold text-white">Idioma Regional</p>
+<p class="text-sm text-slate-500">Idioma principal de la plataforma.</p>
+</div>
+</div>
+<select class="bg-background-dark border-glass-border rounded-lg text-sm text-white px-8 py-2 focus:ring-primary focus:border-primary">
+<option>Español (ES)</option>
+<option>English (US)</option>
+<option>Português (BR)</option>
+</select>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

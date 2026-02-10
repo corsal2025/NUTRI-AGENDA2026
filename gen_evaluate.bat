@@ -1,0 +1,2 @@
+@echo off
+npx -y @_davideast/stitch-mcp tool generate_screen_from_text -d "{\"projectId\":\"16036315028491633555\",\"prompt\":\"Formulario multi-paso avanzado para toma de medidas antropométricas. Diseño limpio y médico pero futurista en español. Inputs segmentados por categorías (Básicos, Pliegues, Perímetros). Guías visuales holográficas de dónde tomar cada medida, todo en español.\",\"deviceType\":\"DESKTOP\"}"

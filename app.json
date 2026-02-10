@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "NutriAgenda",
+    "slug": "nutri-agenda",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "scheme": "nutriagenda",
+    "plugins": [
+      "expo-router"
+    ],
+    "android": {
+      "package": "com.cosal2026.nutriagenda",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "versionCode": 3
+    },
+    "extra": {
+      "eas": {
+        "projectId": "79f2a764-167b-45a5-95ff-f012afcd9aac"
+      }
+    },
+    "owner": "cosal2026"
+  }
+}

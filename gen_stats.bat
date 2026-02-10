@@ -1,0 +1,2 @@
+@echo off
+npx -y @_davideast/stitch-mcp tool generate_screen_from_text -d "{\"projectId\":\"16036315028491633555\",\"prompt\":\"Página de resultados detallados en español. Gráficos de evolución temporal de alta fidelidad. Representación visual de la Somatocarta (gráfico de tres ejes) con diseño premium. Tarjetas descriptivas del tipo de cuerpo (Ecto/Meso/Endo-morfo), todo en español.\",\"deviceType\":\"DESKTOP\"}"

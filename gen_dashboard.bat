@@ -1,0 +1,2 @@
+@echo off
+npx -y @_davideast/stitch-mcp tool generate_screen_from_text -d "{\"projectId\":\"16036315028491633555\",\"prompt\":\"Un dashboard de nutricionista futurista y completo. Centro: Silueta humana holográfica interactiva. Laterales: Widgets de métricas rápidas (Peso, IMC, % Grasa), agenda de citas próximas y notificaciones. Estética: Dark mode premium con acentos fucsia y turquesa, efecto cristal, todo en español.\",\"deviceType\":\"DESKTOP\"}"

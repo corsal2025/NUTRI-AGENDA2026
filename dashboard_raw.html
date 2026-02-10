@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard de Nutrición Futurista</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f20da6",
+                        "secondary": "#00f2ff",
+                        "background-light": "#f8f5f7",
+                        "background-dark": "#0a0509",
+                        "glass": "rgba(35, 16, 29, 0.7)",
+                        "glass-border": "rgba(242, 13, 166, 0.2)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0a0509;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(242, 13, 166, 0.05) 0%, transparent 50%),
+                linear-gradient(rgba(242, 13, 166, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(242, 13, 166, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+        .glass-panel {
+            background: rgba(35, 16, 29, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(242, 13, 166, 0.15);
+        }
+        .neon-glow-fuchsia {
+            box-shadow: 0 0 15px rgba(242, 13, 166, 0.4);
+        }
+        .neon-glow-cyan {
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+        }
+        .hologram-node {
+            animation: pulse 2s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen overflow-x-hidden font-display">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- Left Sidebar Navigation -->
+<aside class="w-20 lg:w-64 glass-panel border-r border-white/5 flex flex-col items-center lg:items-stretch py-6 px-4 gap-8">
+<div class="flex items-center gap-3 px-2">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center neon-glow-fuchsia">
+<span class="material-symbols-outlined text-white text-2xl">biotech</span>
+</div>
+<div class="hidden lg:block">
+<h1 class="text-lg font-bold leading-none tracking-tight">BIO-LINK</h1>
+<p class="text-[10px] text-primary font-bold tracking-[0.2em] uppercase">V 2.0.4</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 flex-1">
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg bg-primary/20 text-primary border border-primary/30 group" href="#">
+<span class="material-symbols-outlined fill-1">dashboard</span>
+<span class="hidden lg:block font-medium">Panel Principal</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/60 hover:bg-white/5 hover:text-white transition-all group" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="hidden lg:block font-medium">Pacientes</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/60 hover:bg-white/5 hover:text-white transition-all group" href="#">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="hidden lg:block font-medium">Planes Dietéticos</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/60 hover:bg-white/5 hover:text-white transition-all group" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="hidden lg:block font-medium">Análisis Bio</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/60 hover:bg-white/5 hover:text-white transition-all group" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="hidden lg:block font-medium">Configuración</span>
+</a>
+</nav>
+<div class="glass-panel p-4 rounded-xl hidden lg:block border-primary/10">
+<p class="text-[10px] text-white/40 uppercase tracking-widest mb-2">Estado del Sistema</p>
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-green-400 animate-pulse"></div>
+<span class="text-xs text-green-400 font-medium">Sincronizado</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-y-auto">
+<!-- Top Header -->
+<header class="h-16 flex items-center justify-between px-8 border-b border-white/5 glass-panel sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<span class="text-white/40 text-sm">Dashboard /</span>
+<h2 class="text-lg font-semibold">Análisis de Nutrición</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-sm">search</span>
+<input class="bg-white/5 border-none rounded-full pl-10 pr-4 py-1.5 text-sm w-64 focus:ring-1 focus:ring-primary" placeholder="Buscar paciente o métrica..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold leading-none">Dr. Elena Varkov</p>
+<p class="text-[10px] text-primary">Neuro-Nutricionista</p>
+</div>
+<div class="size-9 rounded-full bg-cover border border-primary/40 p-0.5" data-alt="Avatar circular de un doctor profesional" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCP7dx_Ss3sA3U2U9mqub_mWDUdMzHeI01ke9kDqFU6R7ZhHv0J-42SEO3koqqasz4gv9D_fvDnEE87tJ7ouD8KWiH5nytX9E0Lj3HFMXn9-wN_rAyL0uc1l0CVQRbG-5Lk1JMDjDMdo7TIKxi8UOQld85k3Mt82sOTHRiT4pLu61DVusEMAdEUHHSWHPFmUbwztkVzeGNJ-oCb1_xjU3tM88AjQgzMzqNhF7CXwNo9rbCcVvGDUV6fKPxuYcxKNbELwS0EW0LlrybM')"></div>
+</div>
+</div>
+</header>
+<!-- Dashboard Grid -->
+<div class="p-8 grid grid-cols-12 gap-6 flex-1">
+<!-- Left Column: Metrics -->
+<div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+<div class="glass-panel rounded-xl p-5 border-l-4 border-l-primary">
+<div class="flex justify-between items-start mb-2">
+<span class="text-white/60 text-sm font-medium">Peso Actual</span>
+<span class="text-xs text-secondary font-bold">-1.2 kg</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold">72.5</span>
+<span class="text-white/40 text-sm">kg</span>
+</div>
+<div class="mt-4 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-3/4 neon-glow-fuchsia"></div>
+</div>
+<p class="text-[10px] text-white/30 mt-2 uppercase tracking-tighter">Meta: 68.0 kg</p>
+</div>
+<div class="glass-panel rounded-xl p-5 border-l-4 border-l-secondary">
+<div class="flex justify-between items-start mb-2">
+<span class="text-white/60 text-sm font-medium">IMC Bio-Análisis</span>
+<span class="text-xs text-white/40">Normal</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold">23.1</span>
+</div>
+<div class="mt-4 flex gap-1">
+<div class="h-1 flex-1 bg-blue-400/20 rounded-full"></div>
+<div class="h-1 flex-1 bg-secondary neon-glow-cyan rounded-full"></div>
+<div class="h-1 flex-1 bg-orange-400/20 rounded-full"></div>
+<div class="h-1 flex-1 bg-red-400/20 rounded-full"></div>
+</div>
+<p class="text-[10px] text-white/30 mt-2 uppercase">Rango saludable detectado</p>
+</div>
+<div class="glass-panel rounded-xl p-5 border-l-4 border-l-primary">
+<div class="flex justify-between items-start mb-2">
+<span class="text-white/60 text-sm font-medium">Grasa Corporal</span>
+<span class="material-symbols-outlined text-primary text-sm">analytics</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold">18.4</span>
+<span class="text-white/40 text-sm">%</span>
+</div>
+<div class="mt-4 flex items-center justify-center">
+<!-- Circular Progress Simulation -->
+<div class="relative size-24">
+<svg class="size-full" viewbox="0 0 36 36">
+<path class="stroke-white/5 stroke-[3] fill-none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+<path class="stroke-primary stroke-[3] fill-none neon-glow-fuchsia" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke-dasharray="60, 100"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-[10px] font-bold text-primary">FIT</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Nutrient Distribution Card -->
+<div class="glass-panel rounded-xl p-5 flex flex-col gap-4">
+<h3 class="text-xs font-bold text-white/60 uppercase tracking-widest">Distribución de Macros</h3>
+<div class="space-y-3">
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span>PROTEÍNAS</span>
+<span>120g / 150g</span>
+</div>
+<div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-secondary neon-glow-cyan w-[80%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span>CARBOHIDRATOS</span>
+<span>180g / 220g</span>
+</div>
+<div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary neon-glow-fuchsia w-[72%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] mb-1">
+<span>GRASAS</span>
+<span>45g / 65g</span>
+</div>
+<div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-white/40 w-[69%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Center Column: Hologram Visualizer -->
+<div class="col-span-12 lg:col-span-6 relative">
+<div class="glass-panel rounded-2xl h-full min-h-[500px] flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Top Info Bar -->
+<div class="absolute top-0 w-full p-6 flex justify-between items-start pointer-events-none">
+<div class="bg-primary/10 border border-primary/30 rounded px-3 py-1 backdrop-blur-md">
+<span class="text-[10px] font-bold text-primary animate-pulse uppercase tracking-widest">Escaneo Bio-Segmental Activo</span>
+</div>
+<div class="text-right">
+<h3 class="text-2xl font-black text-white/20">SILUETA H-02</h3>
+</div>
+</div>
+<!-- 3D Hologram Area -->
+<div class="relative w-full h-[80%] flex items-center justify-center">
+<!-- Background Decor -->
+<div class="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+<div class="size-[400px] border border-primary/20 rounded-full animate-[spin_20s_linear_infinite]"></div>
+<div class="absolute size-[300px] border border-secondary/20 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+</div>
+<!-- Human Silhouette Placeholder -->
+<div class="relative w-64 h-full flex items-center justify-center">
+<img class="h-full object-contain opacity-60 mix-blend-screen grayscale brightness-200 contrast-125" data-alt="Silueta humana estilizada azul neón con nodos de datos" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy595kyzpy6ezmUmJEIOrkMNZugNB_WBgt78hPd-eIixuf2ABOk0EDovj1DHBP06EzLsQc7sY9jBWAUeZEwMYf_YDMa0nwuzl5_bsjGvPC-_JhkquEHU9rpZZiyFTfZyjcXel3XSaAPl8pyDzR3lRJKXM7EFJJ7sptn87LsC9q0O_jwp-XwOmMTl8DaitBRkYUquvjvseZvFrNNkMIOvGFl-ZzUdzWKW6vpVhlqtjTgipzbfcYp21A1zlCBPZE6HCrla6kvhmq05PC"/>
+<!-- Interactive Nodes -->
+<div class="absolute top-[15%] left-1/2 -translate-x-1/2 hologram-node pointer-events-auto cursor-pointer group">
+<div class="size-3 bg-secondary rounded-full neon-glow-cyan border-2 border-white"></div>
+<div class="absolute left-6 top-0 opacity-0 group-hover:opacity-100 transition-all bg-secondary/20 border border-secondary/40 backdrop-blur-md p-2 rounded w-32 translate-x-2 group-hover:translate-x-0">
+<p class="text-[10px] font-bold">ACTIVIDAD NEURAL</p>
+<p class="text-xs">Optimización 94%</p>
+</div>
+</div>
+<div class="absolute top-[45%] left-[60%] hologram-node pointer-events-auto cursor-pointer group" style="animation-delay: 0.5s;">
+<div class="size-3 bg-primary rounded-full neon-glow-fuchsia border-2 border-white"></div>
+<div class="absolute left-6 top-0 opacity-0 group-hover:opacity-100 transition-all bg-primary/20 border border-primary/40 backdrop-blur-md p-2 rounded w-32">
+<p class="text-[10px] font-bold">CORE METABÓLICO</p>
+<p class="text-xs">Quema: 1850 kcal</p>
+</div>
+</div>
+<div class="absolute bottom-[20%] left-[40%] hologram-node pointer-events-auto cursor-pointer group" style="animation-delay: 1.2s;">
+<div class="size-3 bg-white rounded-full box-shadow: 0 0 10px white border-2 border-white"></div>
+<div class="absolute right-6 top-0 opacity-0 group-hover:opacity-100 transition-all bg-white/10 border border-white/20 backdrop-blur-md p-2 rounded w-32">
+<p class="text-[10px] font-bold">DENSIDAD ÓSEA</p>
+<p class="text-xs">Resistencia: Óptima</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Controls -->
+<div class="absolute bottom-6 flex gap-4">
+<button class="bg-primary/20 hover:bg-primary border border-primary/40 px-6 py-2 rounded-full text-xs font-bold transition-all uppercase tracking-widest">Rotar Escaneo</button>
+<button class="bg-white/5 hover:bg-white/10 border border-white/10 px-6 py-2 rounded-full text-xs font-bold transition-all uppercase tracking-widest">Sincronizar Bio-Nodes</button>
+</div>
+</div>
+</div>
+<!-- Right Column: Patient & Diet -->
+<div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+<!-- Patient Profile -->
+<div class="glass-panel rounded-xl p-5 border border-white/10">
+<div class="flex items-center gap-4 mb-4">
+<div class="size-12 rounded-lg bg-cover" data-alt="Retrato de perfil del paciente" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC8Y_sfi_kHsByJZT75NxKMfY4dMBZM_rLm9AMivQEjPqmWnoMYNdgXWd-VnNA07iDGHecluAGfJmqsaVBJKRvUkVcBM3xzF1XMO5VV8DgWVqvnBHrnKD7MBi0P-7GcLTbQueqqdclqGZJuU69DDq0ia-XC_O89wRkSvLamUsf1B25vr8rG4ipNJxXTVFDCP9yD8eOY_0N5EwVRFegAeJisVw7Uf66EA55ehicRa8osjxmBCJoUjkUAOPEBoPR1FrZ54sQqVoJnCJ_Y')"></div>
+<div>
+<h3 class="font-bold leading-none">Marcus Thorne</h3>
+<p class="text-[10px] text-white/40 uppercase mt-1">Sujeto: Delta-09</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="bg-white/5 p-2 rounded text-center">
+<p class="text-[9px] text-white/40">EDAD</p>
+<p class="text-sm font-bold">28</p>
+</div>
+<div class="bg-white/5 p-2 rounded text-center">
+<p class="text-[9px] text-white/40">TIPO</p>
+<p class="text-sm font-bold">Ectomorfo</p>
+</div>
+</div>
+</div>
+<!-- Intake Tracker -->
+<div class="glass-panel rounded-xl p-5 flex-1 flex flex-col">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-xs font-bold uppercase tracking-widest">Registro de Ingesta</h3>
+<button class="size-6 bg-primary/20 rounded flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Meal Item -->
+<div class="flex gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-white/5 group">
+<div class="size-10 rounded bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">coffee</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<p class="text-xs font-bold">Desayuno Keto</p>
+<p class="text-[10px] text-white/40">07:30</p>
+</div>
+<p class="text-[10px] text-primary">340 kcal • 20g Prot</p>
+</div>
+</div>
+<!-- Meal Item -->
+<div class="flex gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
+<div class="size-10 rounded bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">lunch_dining</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<p class="text-xs font-bold">Bowl Bio-Activo</p>
+<p class="text-[10px] text-white/40">13:15</p>
+</div>
+<p class="text-[10px] text-secondary">580 kcal • 45g Carb</p>
+</div>
+</div>
+<!-- Meal Item -->
+<div class="flex gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
+<div class="size-10 rounded bg-white/5 flex items-center justify-center text-white/40">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<p class="text-xs font-bold">Post-Entreno</p>
+<p class="text-[10px] text-white/40">15:45</p>
+</div>
+<p class="text-[10px] text-white/40">120 kcal • 25g Prot</p>
+</div>
+</div>
+</div>
+<!-- Hydration Tracker -->
+<div class="mt-auto pt-6">
+<div class="flex justify-between items-end mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">water_drop</span>
+<span class="text-xs font-bold uppercase tracking-widest">Hidratación</span>
+</div>
+<span class="text-xs font-bold text-secondary">1.8L / 2.5L</span>
+</div>
+<div class="h-12 w-full glass-panel rounded-lg overflow-hidden flex items-end p-1 border-secondary/10">
+<div class="h-[72%] w-full bg-secondary/30 rounded border-t border-secondary/50 relative">
+<div class="absolute inset-0 bg-gradient-to-t from-secondary/40 to-transparent"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Call to action -->
+<button class="w-full bg-primary text-white font-bold py-4 rounded-xl neon-glow-fuchsia hover:scale-[1.02] transition-transform active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest text-xs">
+<span class="material-symbols-outlined">send</span>
+                        Enviar Plan Actualizado
+                    </button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

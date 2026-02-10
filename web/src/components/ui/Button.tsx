@@ -1,0 +1,43 @@
+import React from 'react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+    size?: 'sm' | 'md' | 'lg';
+}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+    ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
+        const variants = {
+            primary: 'bg-primary text-white hover:bg-primary-700 shadow-md shadow-primary/20',
+            secondary: 'bg-secondary text-white hover:bg-secondary-600',
+            outline: 'border-2 border-primary text-primary hover:bg-primary-50',
+            ghost: 'text-primary hover:bg-primary-50',
+        };
+
+        const sizes = {
+            sm: 'px-3 py-1.5 text-sm',
+            md: 'px-5 py-2.5 text-base',
+            lg: 'px-8 py-3.5 text-lg',
+        };
+
+        return (
+            <button
+                ref={ref}
+                className={cn(
+                    'inline-flex items-center justify-center rounded-xl font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 disabled:opacity-50 disabled:cursor-not-allowed',
+                    variants[variant],
+                    sizes[size],
+                    className
+                )}
+                {...props}
+            />
+        );
+    }
+);
+Button.displayName = 'Button';
