@@ -1,37 +1,37 @@
-## 🔥 Variables de Entorno para EAS Build
+## Variables de Entorno para EAS Build (Expo)
 
-El archivo `.env` NO se sube a EAS por seguridad. Debes configurarlas en Expo:
+EAS Build no usa tu `.env` local. Debes configurar secretos/variables en el proyecto (Expo).
 
-### Opción 1: Via Web (Recomendado)
-1. Ve a: https://expo.dev/accounts/cosal2026/projects/nutri-agenda/secrets
-2. Agrega cada variable:
+### Variables (app Expo)
 
-```
-FIREBASE_API_KEY=AIzaSyBdLjFMV_Mdx8UMc1B8JfQLUVNBrslp_lw
-FIREBASE_AUTH_DOMAIN=nutri-agenda-5bd9f.firebaseapp.com
-FIREBASE_PROJECT_ID=nutri-agenda-5bd9f
-FIREBASE_STORAGE_BUCKET=nutri-agenda-5bd9f.firebasestorage.app
-FIREBASE_MESSAGING_SENDER_ID=959595137128
-FIREBASE_APP_ID=1:959595137128:web:4bac44a6cab6310c9553dd
-APP_ENV=production
-```
+Estas variables se usan en `services/firebase.ts`:
 
-### Opción 2: Via CLI
+- `EXPO_PUBLIC_FIREBASE_API_KEY`
+- `EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `EXPO_PUBLIC_FIREBASE_PROJECT_ID`
+- `EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `EXPO_PUBLIC_FIREBASE_APP_ID`
+
+Y opcional:
+
+- `EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY`
+- `APP_ENV` (ej: `production`)
+
+### Opcion 1: Via Web
+
+1. Entra a los secretos del proyecto en Expo (EAS):
+2. Agrega cada variable (nombre/valor).
+
+### Opcion 2: Via CLI
+
+Ejemplo (reemplaza los valores):
+
 ```bash
-npx eas secret:create --scope project --name FIREBASE_API_KEY --value AIzaSyBdLjFMV_Mdx8UMc1B8JfQLUVNBrslp_lw
-npx eas secret:create --scope project --name FIREBASE_AUTH_DOMAIN --value nutri-agenda-5bd9f.firebaseapp.com
-npx eas secret:create --scope project --name FIREBASE_PROJECT_ID --value nutri-agenda-5bd9f
-npx eas secret:create --scope project --name FIREBASE_STORAGE_BUCKET --value nutri-agenda-5bd9f.firebasestorage.app
-npx eas secret:create --scope project --name FIREBASE_MESSAGING_SENDER_ID --value 959595137128
-npx eas secret:create --scope project --name FIREBASE_APP_ID --value 1:959595137128:web:4bac44a6cab6310c9553dd
-npx eas secret:create --scope project --name APP_ENV --value production
+eas secret:create --scope project --name EXPO_PUBLIC_FIREBASE_API_KEY --value "TU_VALOR"
 ```
 
-### ⚠️ IMPORTANTE
-Después de agregar las variables:
-1. **Cancela el build actual** (si aún corre)
-2. **Relanza**: `npx eas-cli build --platform android --profile preview`
+### Importante
 
----
-
-**Nota:** Si el build actual falla por "Firebase not configured", este es el problema.
+- No guardes tokens/secretos en el repo.
+- Si un secreto ya se publico, rotalo (revoca y genera uno nuevo).

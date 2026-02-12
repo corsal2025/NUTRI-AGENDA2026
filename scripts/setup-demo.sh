@@ -1,25 +1,56 @@
-#!/bin/bash
-# Auto-setup script for Nutri-Agenda development
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "🚀 NutriAgenda - Auto Setup"
-echo "=============================="
+echo "NutriAgenda - Setup demo users (Firebase)"
 
-# Create demo users in Firebase
-echo "📝 Creating demo credentials..."
+top_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$top_dir"
 
-# Create a seed data script
-cat > /tmp/seed_users.js << 'EOF'
+if [ ! -f .env ]; then
+  echo "Falta .env en la raiz. Crea uno con: cp .env.example .env"
+  exit 1
+fi
+
+# Exporta variables desde .env (formato KEY=VALUE)
+set -a
+# shellcheck disable=SC1091
+source .env
+set +a
+
+required=(
+  EXPO_PUBLIC_FIREBASE_API_KEY
+  EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN
+  EXPO_PUBLIC_FIREBASE_PROJECT_ID
+  EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET
+  EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+  EXPO_PUBLIC_FIREBASE_APP_ID
+)
+
+for v in "${required[@]}"; do
+  if [ -z "${!v:-}" ]; then
+    echo "Falta variable $v (ver .env.example)"
+    exit 1
+  fi
+done
+
+cat > /tmp/seed_users.js <<'JS'
 const { initializeApp } = require('firebase/app');
 const { getAuth, createUserWithEmailAndPassword } = require('firebase/auth');
 const { getFirestore, doc, setDoc } = require('firebase/firestore');
 
+function requiredEnv(name) {
+  const v = process.env[name];
+  if (!v) throw new Error(`Missing env var ${name}.`);
+  return v;
+}
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBdLjFMV_Mdx8UMc1B8JfQLUVNBrslp_lw",
-  authDomain: "nutri-agenda-5bd9f.firebaseapp.com",
-  projectId: "nutri-agenda-5bd9f",
-  storageBucket: "nutri-agenda-5bd9f.firebasestorage.app",
-  messagingSenderId: "959595137128",
-  appId: "1:959595137128:web:4bac44a6cab6310c9553dd"
+  apiKey: requiredEnv('EXPO_PUBLIC_FIREBASE_API_KEY'),
+  authDomain: requiredEnv('EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN'),
+  projectId: requiredEnv('EXPO_PUBLIC_FIREBASE_PROJECT_ID'),
+  storageBucket: requiredEnv('EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET'),
+  messagingSenderId: requiredEnv('EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID'),
+  appId: requiredEnv('EXPO_PUBLIC_FIREBASE_APP_ID'),
 };
 
 const app = initializeApp(firebaseConfig);
@@ -29,7 +60,7 @@ const db = getFirestore(app);
 async function createDemoUsers() {
   const users = [
     { email: 'demo@nutriagenda.com', password: 'demo123456', name: 'Demo User', role: 'client', phone: '+1234567890' },
-    { email: 'nutritionist@nutriagenda.com', password: 'nutri123456', name: 'Dr. Demo', role: 'nutritionist', phone: '+0987654321' }
+    { email: 'nutritionist@nutriagenda.com', password: 'nutri123456', name: 'Dr. Demo', role: 'nutritionist', phone: '+0987654321' },
   ];
 
   for (const user of users) {
@@ -40,33 +71,25 @@ async function createDemoUsers() {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       });
-      console.log(`✅ Created: ${user.email} (${user.role})`);
+      console.log(`Created: ${user.email} (${user.role})`);
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
-        console.log(`ℹ️  Already exists: ${user.email}`);
+        console.log(`Already exists: ${user.email}`);
       } else {
-        console.error(`❌ Error creating ${user.email}:`, error.message);
+        console.error(`Error creating ${user.email}:`, error.message);
       }
     }
   }
-  
-  console.log('\n✅ Demo users ready!');
-  console.log('================================');
-  console.log('CLIENT LOGIN:');
-  console.log('  Email: demo@nutriagenda.com');
-  console.log('  Password: demo123456');
-  console.log('');
-  console.log('NUTRITIONIST LOGIN:');
-  console.log('  Email: nutritionist@nutriagenda.com');
-  console.log('  Password: nutri123456');
-  console.log('================================');
-  process.exit(0);
 }
 
-createDemoUsers();
-EOF
+createDemoUsers()
+  .then(() => console.log('Demo users ready'))
+  .catch((err) => {
+    console.error(err);
+    process.exitCode = 1;
+  });
+JS
 
-cd /home/rauls/.gemini/antigravity/scratch/nutri-agenda
 node /tmp/seed_users.js

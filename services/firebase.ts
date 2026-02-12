@@ -4,14 +4,23 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-// Firebase configuration - Direct values for web deployment
+function requiredEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing env var ${name}. See .env.example`);
+  }
+  return value;
+}
+
+// Firebase configuration (Expo)
+// Nota: usa EXPO_PUBLIC_* para exponer variables al bundle.
 const firebaseConfig = {
-  apiKey: "AIzaSyBdLjFMV_Mdx8UMc1B8JfQLUVNBrslp_lw",
-  authDomain: "nutri-agenda-5bd9f.firebaseapp.com",
-  projectId: "nutri-agenda-5bd9f",
-  storageBucket: "nutri-agenda-5bd9f.firebasestorage.app",
-  messagingSenderId: "959595137128",
-  appId: "1:959595137128:web:4bac44a6cab6310c9553dd"
+  apiKey: requiredEnv('EXPO_PUBLIC_FIREBASE_API_KEY'),
+  authDomain: requiredEnv('EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN'),
+  projectId: requiredEnv('EXPO_PUBLIC_FIREBASE_PROJECT_ID'),
+  storageBucket: requiredEnv('EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET'),
+  messagingSenderId: requiredEnv('EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID'),
+  appId: requiredEnv('EXPO_PUBLIC_FIREBASE_APP_ID'),
 };
 
 // Initialize Firebase
