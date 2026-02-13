@@ -11,6 +11,30 @@ cp .env.example .env.local
 npm run dev
 ```
 
+
+Si estas en WSL y tu proyecto vive en un disco exFAT (muy comun en discos externos),
+`npm install`/`npm ci` puede fallar con `Operation not permitted` por los *symlinks*.
+En ese caso usa el script para montar `node_modules` en el filesystem Linux (ext4):
+
+```bash
+./scripts/wsl_web_deps.sh mount
+cd web
+npm ci
+npm run dev
+```
+
+Si Next sigue fallando por permisos, prueba con cache tambien:
+
+```bash
+./scripts/wsl_web_deps.sh mount --with-next-cache
+```
+
+Para desmontar:
+
+```bash
+./scripts/wsl_web_deps.sh umount --with-next-cache
+```
+
 Variables requeridas: ver `web/.env.example`.
 
 ## 2) App Expo (React Native)
