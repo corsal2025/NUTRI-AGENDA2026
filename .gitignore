@@ -23,3 +23,6 @@ web-build/
 *.swp
 *.swo
 *~
+
+# backups
+.env.bak-*
