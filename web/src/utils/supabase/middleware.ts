@@ -6,16 +6,23 @@ export async function updateSession(request: NextRequest) {
         request,
     })
 
+    // Si faltan variables de entorno, continuar sin auth
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    if (!supabaseUrl || !supabaseUrl.startsWith('http') || !supabaseKey) {
+        return supabaseResponse
+    }
+
     const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        supabaseUrl,
+        supabaseKey,
         {
             cookies: {
                 getAll() {
                     return request.cookies.getAll()
                 },
                 setAll(cookiesToSet) {
-                    cookiesToSet.forEach(({ name, value, options }) =>
+                    cookiesToSet.forEach(({ name, value }) =>
                         request.cookies.set(name, value)
                     )
                     supabaseResponse = NextResponse.next({
@@ -29,12 +36,14 @@ export async function updateSession(request: NextRequest) {
         }
     )
 
-    // Do not run Supabase code available in @supabase/ssr documentation!
-    // It handles the session refresh logic automatically.
-
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
+    let user = null
+    try {
+        const { data } = await supabase.auth.getUser()
+        user = data.user
+    } catch {
+        // Si Supabase no está disponible, continuar sin protección de rutas
+        return supabaseResponse
+    }
 
     // Protect Dashboard routes
     if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
