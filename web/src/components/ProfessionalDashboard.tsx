@@ -50,29 +50,29 @@ export function ProfessionalDashboard({ profile, stats }: any) {
                 <StatCard
                     icon={Activity}
                     label="Pacientes Activos"
-                    value="42"
-                    subtext="+3 esta semana"
+                    value="0"
+                    subtext="Sin pacientes nuevos"
                     color="fuchsia"
                 />
                 <StatCard
                     icon={Calendar}
                     label="Citas Pendientes"
-                    value="8"
-                    subtext="Hoy: 3 citas"
+                    value="0"
+                    subtext="Hoy: 0 citas"
                     color="indigo"
                 />
                 <StatCard
                     icon={TrendingUp}
                     label="Evolución Media"
-                    value="1.4%"
-                    subtext="Baja de grasa"
+                    value="0%"
+                    subtext="Sin registros previos"
                     color="emerald"
                 />
                 <StatCard
                     icon={Heart}
                     label="Puntuación Médica"
-                    value="98"
-                    subtext="Índice de Salud"
+                    value="0"
+                    subtext="Sin datos"
                     color="rose"
                 />
             </div>
@@ -164,9 +164,9 @@ export function ProfessionalDashboard({ profile, stats }: any) {
                             <span className="text-[10px] font-black bg-slate-50 text-gray-400 px-2 py-1 rounded-lg uppercase tracking-widest">Hoy</span>
                         </div>
                         <div className="space-y-4">
-                            <AppointmentItem time="10:30" name="Javier Ortega" type="Control Control" isFirst={false} />
-                            <AppointmentItem time="11:45" name="Marcela Ruiz" type="Evaluación Inicial" isFirst={true} />
-                            <AppointmentItem time="16:00" name="Roberto Gómez" type="Seguimiento" isFirst={false} />
+                            <div className="text-center py-6">
+                                <p className="text-gray-400 text-sm">No tienes citas agendadas para hoy.</p>
+                            </div>
                         </div>
                         <button className="w-full py-4 bg-slate-50 text-gray-600 font-bold rounded-2xl hover:bg-slate-100 transition-colors text-sm">
                             Ver Agenda Completa
@@ -215,18 +215,9 @@ function EvaluationTable({ stats }: any) {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                    <tr className="group">
-                        <td className="py-4 text-sm font-bold text-gray-700">09 Feb, 2026</td>
-                        <td className="py-4 text-sm font-bold text-gray-900">Marcus Thorne (Yo)</td>
-                        <td className="py-4 text-sm text-gray-600 font-medium">{stats?.weight || "72.4"} kg</td>
-                        <td className="py-4 text-sm text-gray-600 font-medium">{stats?.mass_muscle_kg?.toFixed(1) || "38.2"} kg</td>
-                        <td className="py-4">
-                            <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">{stats?.mass_fat_pct?.toFixed(1) || "14.2"}%</span>
-                        </td>
-                        <td className="py-4 text-right">
-                            <button className="p-2 text-gray-300 hover:text-fuchsia-600 transition-colors">
-                                <ChevronRight size={18} />
-                            </button>
+                    <tr>
+                        <td colSpan={6} className="py-12 text-center">
+                            <p className="text-gray-400 text-sm">Aún no hay mediciones registradas.</p>
                         </td>
                     </tr>
                 </tbody>
