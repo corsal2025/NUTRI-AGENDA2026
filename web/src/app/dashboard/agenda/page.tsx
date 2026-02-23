@@ -12,6 +12,7 @@ import { configService } from "@/services/configService";
 
 export default function AdminAgendaPage() {
     const [citas, setCitas] = useState<any[]>([]);
+    const [profile, setProfile] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +24,21 @@ export default function AdminAgendaPage() {
     useEffect(() => {
         fetchCitas();
         fetchPatientsAndConfig();
+        fetchProfile();
     }, []);
+
+    async function fetchProfile() {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            const { data } = await supabase
+                .from('perfiles')
+                .select('*')
+                .eq('user_id', user.id)
+                .single();
+            if (data) setProfile(data);
+        }
+    }
 
     async function fetchCitas() {
         const supabase = createClient();
@@ -73,9 +88,16 @@ export default function AdminAgendaPage() {
         <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-4xl font-bold text-gray-900 font-serif">
-                        Agenda de Consultas
-                    </h1>
+                    <div className="flex flex-col space-y-2 mb-4">
+                        {profile && (
+                            <p className="text-fuchsia-600 font-bold tracking-wide">
+                                ¡Hola, {profile.nombre_completo?.split(' ')[0]}!
+                            </p>
+                        )}
+                        <h1 className="text-4xl font-bold text-gray-900 font-serif">
+                            Agenda de Consultas
+                        </h1>
+                    </div>
                     <p className="text-gray-500 font-medium">
                         Administra tus reservas y revisa las próximas atenciones médicas.
                     </p>
