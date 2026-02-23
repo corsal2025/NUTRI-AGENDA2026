@@ -318,7 +318,7 @@ function NewAppointmentModal({ onClose, patients, availabilityConfig, onSuccess 
                                 {showDropdown && (
                                     <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
                                         {filteredPatients.length > 0 ? (
-                                            filteredPatients.map(p => (
+                                            filteredPatients.map((p: any) => (
                                                 <div
                                                     key={p.id}
                                                     onClick={() => {
