@@ -5,6 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
+import { configService } from '@/services/configService';
+import { useUserRole } from '@/hooks/useUserRole';
 import {
     LayoutDashboard,
     History,
@@ -18,7 +20,8 @@ import {
     Instagram,
     Facebook,
     CalendarDays,
-    HeartPulse
+    HeartPulse,
+    TrendingUp
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -26,22 +29,70 @@ interface MenuItem {
     icon: React.ElementType;
     label: string;
     href: string;
+    adminOnly?: boolean;
+    patientOnly?: boolean;
 }
-
-const menuItems: MenuItem[] = [
-    { icon: LayoutDashboard, label: "Panel Principal", href: "/dashboard" },
-    { icon: HeartPulse, label: "Evaluación", href: "/dashboard/evaluate" },
-    { icon: History, label: "Historial Clínico", href: "/dashboard/history" },
-    { icon: BarChart2, label: "Estadísticas", href: "/dashboard/statistics" },
-    { icon: CalendarDays, label: "Agenda", href: "/dashboard/agenda" },
-    { icon: CreditCard, label: "Pagos y Planes", href: "/dashboard/pagos" },
-    { icon: User, label: "Perfil", href: "/dashboard/profile" },
-    { icon: Settings, label: "Configuración", href: "/dashboard/settings" },
-];
 
 export function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
+    const { role, isAdmin, isPatient, loading } = useUserRole();
+
+    const menuItems: MenuItem[] = [
+        { icon: User, label: isAdmin ? "Perfil" : "Mi Ficha Clínica", href: "/dashboard/profile" },
+        {
+            icon: isAdmin ? LayoutDashboard : TrendingUp,
+            label: isAdmin ? "Panel Principal" : "Mi Evolución",
+            href: "/dashboard"
+        },
+        {
+            icon: HeartPulse,
+            label: "Evaluación",
+            href: "/dashboard/evaluate",
+            adminOnly: true
+        },
+        {
+            icon: History,
+            label: "Historial Clínico",
+            href: "/dashboard/history",
+            adminOnly: true
+        },
+        {
+            icon: BarChart2,
+            label: "Estadísticas",
+            href: "/dashboard/statistics",
+            adminOnly: true
+        },
+        { icon: CalendarDays, label: "Agenda", href: "/dashboard/agenda" },
+        { icon: CreditCard, label: "Pagos y Planes", href: "/dashboard/pagos" },
+        {
+            icon: Settings,
+            label: "Configuración",
+            href: "/dashboard/settings",
+            adminOnly: true
+        },
+    ];
+
+    // Filtrar items según rol
+    const filteredItems = menuItems.filter(item => {
+        if (item.adminOnly && !isAdmin) return false;
+        if (item.patientOnly && !isPatient) return false;
+        return true;
+    });
+
+    const [logoUrl, setLogoUrl] = useState<string>('/logo-oficial.png');
+
+    useEffect(() => {
+        async function loadLogo() {
+            try {
+                const url = await configService.getConfig('logo_url' as any);
+                if (url) setLogoUrl(url);
+            } catch (error) {
+                console.error("Error loading logo from database:", error);
+            }
+        }
+        loadLogo();
+    }, []);
 
     const handleSignOut = async () => {
         const supabase = createClient();
@@ -49,70 +100,30 @@ export function Sidebar() {
         router.push("/login");
     };
 
-    const [isAdmin, setIsAdmin] = useState(false);
-
-    useEffect(() => {
-        checkAdmin();
-    }, []);
-
-    const checkAdmin = async () => {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (user) {
-            const { data: config } = await supabase
-                .from('app_config')
-                .select('value')
-                .eq('key', 'contact_info')
-                .single();
-
-            const configValue = config?.value as { email?: string } | null;
-            const adminEmail = configValue?.email;
-
-            if (adminEmail && user.email === adminEmail) {
-                setIsAdmin(true);
-            }
-        }
-    };
-
-    const filteredMenuItems = menuItems.filter(item => {
-        if (item.href === '/dashboard/settings') return isAdmin;
-        return true;
-    });
+    // El filtrado ya se hizo arriba con filteredItems
 
     return (
-        <aside className="w-64 bg-white h-[calc(100vh-2rem)] flex flex-col fixed left-4 top-4 bottom-4 rounded-[3rem] z-50 text-gray-900 shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
+        <aside className="w-64 bg-white h-[calc(100vh-2rem)] flex flex-col fixed left-4 top-4 bottom-4 rounded-[3rem] z-[100] text-gray-900 shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
             {/* Logo & Profile Section */}
-            <div className="pt-8 px-6 mb-6">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="size-12 rounded-2xl bg-fuchsia-600 flex items-center justify-center text-white shadow-lg shadow-fuchsia-200">
-                        <HeartPulse size={28} strokeWidth={2.5} />
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-black tracking-tight leading-none text-gray-900">NUTRI</h1>
-                        <p className="text-[11px] font-black text-fuchsia-600 tracking-[0.25em]">AGENDA</p>
+            <div className="pt-6 px-6 mb-2">
+                <div className="flex flex-col items-center gap-4 mb-4">
+                    <div className="size-36 flex items-center justify-center">
+                        <img
+                            src="/logo-oficial.png"
+                            alt="Verónica Amaya - Nutrición y Deporte"
+                            className="size-full object-contain"
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://placehold.co/200x200?text=Nutri-Agenda';
+                            }}
+                        />
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100 group">
-                    <div className="relative size-12 rounded-xl overflow-hidden shadow-sm border border-white shrink-0">
-                        <Image
-                            src="/1.jpeg"
-                            alt="Verónica Amaya"
-                            fill
-                            className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                    </div>
-                    <div className="min-w-0">
-                        <p className="text-[10px] font-black text-fuchsia-600 uppercase tracking-widest leading-none mb-1">Nutricionista</p>
-                        <p className="text-xs font-bold text-gray-900 truncate">Verónica Amaya</p>
-                    </div>
-                </div>
             </div>
 
             {/* Navigation */}
             <nav className="flex-1 space-y-0.5 px-3 overflow-y-auto no-scrollbar">
-                {filteredMenuItems.map((item) => {
+                {filteredItems.map((item) => {
                     const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
                     return (
                         <Link
@@ -141,10 +152,10 @@ export function Sidebar() {
             <div className="p-3 mt-auto">
                 <div className="bg-slate-50 rounded-[2rem] p-3 border border-slate-100">
                     <div className="flex justify-center gap-3 mb-2">
-                        <a href="https://instagram.com/nutri.veronica" target="_blank" rel="noopener noreferrer" className="p-1.5 bg-white rounded-full shadow-sm text-gray-400 hover:text-fuchsia-600 transition-colors">
+                        <a href="https://www.instagram.com/nutricionista_veronicamaya?igsh=c2l3ZzE5cndxbHFi" target="_blank" rel="noopener noreferrer" className="p-1.5 bg-white rounded-full shadow-sm text-gray-400 hover:text-fuchsia-600 transition-colors">
                             <Instagram size={14} />
                         </a>
-                        <a href="https://facebook.com/nutri.veronica" target="_blank" rel="noopener noreferrer" className="p-1.5 bg-white rounded-full shadow-sm text-gray-400 hover:text-fuchsia-600 transition-colors">
+                        <a href="https://www.facebook.com/share/18EU8Vfe67/" target="_blank" rel="noopener noreferrer" className="p-1.5 bg-white rounded-full shadow-sm text-gray-400 hover:text-fuchsia-600 transition-colors">
                             <Facebook size={14} />
                         </a>
                     </div>
@@ -158,6 +169,6 @@ export function Sidebar() {
                     </button>
                 </div>
             </div>
-        </aside>
+        </aside >
     );
 }

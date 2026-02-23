@@ -135,6 +135,7 @@ export default function PagosPage() {
                 onClose={() => setSelectedPlan(null)}
                 planName={selectedPlan?.name || ''}
                 planPrice={selectedPlan?.price || ''}
+                title="Contratar Plan Nutricional"
             />
         </div>
     );

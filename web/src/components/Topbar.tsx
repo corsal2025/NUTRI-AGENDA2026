@@ -8,7 +8,9 @@ import { NotificationPopover } from "./NotificationPopover";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { configService } from "@/services/configService";
 import { useDebounce } from "use-debounce";
+import { motion, AnimatePresence } from "framer-motion";
 import clsx from "clsx";
 
 export function Topbar() {
@@ -21,6 +23,19 @@ export function Topbar() {
     const [isSearching, setIsSearching] = useState(false);
     const [showResults, setShowResults] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [logoUrl, setLogoUrl] = useState<string>('/logo-oficial.png');
+
+    useEffect(() => {
+        async function loadLogo() {
+            try {
+                const url = await configService.getConfig('logo_url' as any);
+                if (url) setLogoUrl(url);
+            } catch (error) {
+                console.error("Error loading logo in Topbar:", error);
+            }
+        }
+        loadLogo();
+    }, []);
 
     const handleSignOut = async () => {
         const supabase = createClient();
@@ -126,8 +141,13 @@ export function Topbar() {
                                                     onClick={() => handleSelectPatient(patient.user_id)}
                                                     className="px-4 py-3 hover:bg-fuchsia-50 cursor-pointer border-b border-gray-50 last:border-0 flex items-center gap-3 transition-colors"
                                                 >
-                                                    <div className="size-8 rounded-full bg-fuchsia-100 flex items-center justify-center text-fuchsia-600 font-bold text-xs shrink-0">
-                                                        {patient.nombre_completo?.charAt(0) || "U"}
+                                                    <div className="size-8 rounded-full overflow-hidden shadow-sm border border-white relative shrink-0">
+                                                        <Image
+                                                            src="/veronica.png"
+                                                            alt="Verónica Amaya"
+                                                            fill
+                                                            className="object-cover"
+                                                        />
                                                     </div>
                                                     <div className="min-w-0">
                                                         <p className="text-sm font-bold text-gray-900 truncate">{patient.nombre_completo}</p>
@@ -163,25 +183,96 @@ export function Topbar() {
                         </button>
 
                         {/* Profile */}
-                        <div className="flex items-center gap-3 pl-2 cursor-pointer group">
-                            <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-transparent group-hover:border-fuchsia-200 transition-all">
-                                {/* Using unoptimized for external URL placeholder */}
+                        <div className="flex items-center gap-3 pl-2 cursor-pointer group" onClick={() => router.push('/dashboard/profile')}>
+                            <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-fuchsia-100 group-hover:border-fuchsia-300 transition-all shadow-sm">
                                 <Image
-                                    unoptimized
-                                    src="https://ui-avatars.com/api/?name=Veronica+Amaya&background=fdf4ff&color=d946ef"
-                                    alt="User"
+                                    src="/veronica.png"
+                                    alt="Verónica Amaya"
                                     fill
                                     className="object-cover"
                                 />
                             </div>
                             <div className="hidden md:block">
-                                <p className="text-sm font-medium text-gray-700 group-hover:text-fuchsia-700 transition-colors">Verónica Amaya</p>
-                                <p className="text-xs text-gray-400 uppercase tracking-wide">NUTRICIONISTA ISAK 1</p>
+                                <p className="text-sm font-bold text-gray-800 group-hover:text-fuchsia-700 transition-colors">Verónica Amaya</p>
+                                <p className="text-[9px] font-black text-fuchsia-500 uppercase tracking-widest">NUTRICIONISTA UPLA | ISAK I</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </header>
+
+            {/* Mobile Menu Overlay */}
+            <AnimatePresence>
+                {isMobileMenuOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[1000] lg:hidden"
+                        />
+                        <motion.div
+                            initial={{ x: "-100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "-100%" }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="fixed inset-y-0 left-0 w-80 bg-white shadow-2xl z-[1001] lg:hidden flex flex-col"
+                        >
+                            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                                <div className="size-16 rounded-2xl overflow-hidden border-2 border-white shadow-md bg-white">
+                                    <img
+                                        src="/logo-oficial.png"
+                                        alt="Logo"
+                                        className="size-full object-contain p-1"
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).src = 'https://placehold.co/200x200?text=Nutri-Agenda';
+                                        }}
+                                    />
+                                </div>
+                                <button
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="p-2 text-gray-400 hover:text-gray-900 transition-colors"
+                                >
+                                    <X size={24} />
+                                </button>
+                            </div>
+
+                            <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+                                {filteredMenuItems.map((item) => {
+                                    const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+                                    return (
+                                        <Link
+                                            key={item.href}
+                                            href={item.href}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className={clsx(
+                                                "flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold transition-all",
+                                                isActive
+                                                    ? "bg-fuchsia-600 text-white shadow-lg shadow-fuchsia-100"
+                                                    : "text-gray-500 hover:bg-slate-50 hover:text-gray-900"
+                                            )}
+                                        >
+                                            <item.icon size={20} className={isActive ? "text-white" : "text-gray-400"} />
+                                            {item.label}
+                                        </Link>
+                                    );
+                                })}
+                            </nav>
+
+                            <div className="p-4 border-t border-slate-100">
+                                <button
+                                    onClick={handleSignOut}
+                                    className="flex items-center gap-4 w-full px-5 py-4 rounded-2xl text-sm font-bold text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition-all"
+                                >
+                                    <LogOut size={20} />
+                                    Cerrar Sesión
+                                </button>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </>
     );
 }

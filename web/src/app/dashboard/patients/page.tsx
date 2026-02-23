@@ -59,10 +59,13 @@ export default function PatientsPage() {
                         <Filter className="size-4" />
                         Filtrar
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-fuchsia-600 text-white font-black text-sm shadow-lg shadow-fuchsia-100 hover:bg-fuchsia-700 hover:scale-105 active:scale-95 transition-all">
+                    <Link
+                        href="/dashboard/patients/new"
+                        className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-fuchsia-600 text-white font-black text-sm shadow-lg shadow-fuchsia-100 hover:bg-fuchsia-700 hover:scale-105 active:scale-95 transition-all"
+                    >
                         <UserPlus className="size-4" />
                         NUEVO PACIENTE
-                    </button>
+                    </Link>
                 </div>
             </div>
 

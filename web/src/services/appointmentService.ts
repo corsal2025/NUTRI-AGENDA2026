@@ -1,96 +1,78 @@
 import { createClient } from '@/utils/supabase/client';
+import { format } from 'date-fns';
 
 export interface Appointment {
     id: string; // UUID
     patient_id: string;
-    start_time: string; // ISO string (DB column: start_time)
-    end_time: string;   // ISO string (DB column: end_time)
-    notes?: string;
-    status: string;
+    start_time: string; // Construido combinando fecha y hora de BD para que Frontend funcione
+    notes?: string;     // Vamos a usar esto en DB si lo agregamos, o dejarlo out
+    status: string;     // viene de estado_pago / estado_cita
 }
 
 export const appointmentService = {
     async getAppointments(): Promise<Appointment[]> {
         const supabase = createClient();
         const { data, error } = await supabase
-            .from('appointments')
+            .from('citas')
             .select('*');
 
         if (error) {
             console.error('Error fetching appointments:', error);
             throw error;
         }
-        return data as Appointment[];
+
+        // Mapear de esquema BD a esquema Frontend
+        const mappedData: Appointment[] = (data || []).map((cita: any) => {
+            const startStr = `${cita.fecha_cita}T${cita.hora_cita}`;
+            return {
+                id: cita.id,
+                patient_id: cita.id_paciente,
+                start_time: startStr,
+                end_time: startStr, // placeholder
+                notes: cita.link_reunion || 'Consulta',
+                status: cita.estado_pago
+            };
+        });
+
+        return mappedData;
     },
 
     async createAppointment(appointmentData: { patient_id: string, date_time: string, duration_minutes: number, notes?: string }): Promise<Appointment> {
         const supabase = createClient();
 
         const startTime = new Date(appointmentData.date_time);
-        const endTime = new Date(startTime.getTime() + appointmentData.duration_minutes * 60000);
+        const fecha = format(startTime, 'yyyy-MM-dd');
+        const hora = format(startTime, 'HH:mm:ss');
 
-        const appointmentToSave = {
-            patient_id: appointmentData.patient_id,
-            start_time: startTime.toISOString(),
-            end_time: endTime.toISOString(),
-            notes: appointmentData.notes,
-            status: 'scheduled'
+        const citaToSave = {
+            id_paciente: appointmentData.patient_id,
+            fecha_cita: fecha,
+            hora_cita: hora,
+            estado_pago: 'pendiente',
+            link_reunion: appointmentData.notes
+            // id_sucursal omitido temporalmente o podríamos fetchear una
         };
 
         const { data, error } = await supabase
-            .from('appointments')
-            .insert([appointmentToSave])
+            .from('citas')
+            .insert([citaToSave])
             .select()
             .single();
 
         if (error) {
-            console.error('Error creating appointment full details:', {
-                message: error.message,
-                details: error.details,
-                hint: error.hint,
-                code: error.code
-            });
+            console.error('Error creating appointment:', error);
             throw error;
         }
 
-        // --- Send Email Notification ---
-        try {
-            // 1. Get current user (patient) details
-            const { data: { user } } = await supabase.auth.getUser();
-            const patientEmail = user?.email;
-            const patientName = user?.user_metadata?.full_name || 'Paciente';
+        const startStr = `${data.fecha_cita}T${data.hora_cita}`;
+        const newAppt: Appointment = {
+            id: data.id,
+            patient_id: data.id_paciente,
+            start_time: startStr,
+            status: data.estado_pago,
+            notes: data.link_reunion
+        };
 
-            // 2. Get Nutritionist Email from App Config
-            const { data: config } = await supabase
-                .from('app_config')
-                .select('value')
-                .eq('key', 'contact_info')
-                .single();
-
-            // value is JSONB, so we cast it or access it safely
-            const configValue = config?.value as { email?: string } | null;
-            const nutritionistEmail = configValue?.email;
-
-            // 3. Call API
-            if (patientEmail) {
-                await fetch('/api/send-email', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        patientEmail,
-                        patientName,
-                        date: startTime.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-                        time: startTime.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
-                        type: 'Consulta General', // Could be dynamic if we added type to params
-                        nutritionistEmail
-                    })
-                });
-            }
-        } catch (emailError) {
-            console.error('Error sending email notification (non-blocking):', emailError);
-            // We do not throw here to avoid failing the appointment if just email fails
-        }
-
-        return data as Appointment;
+        return newAppt;
     }
 };

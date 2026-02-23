@@ -8,10 +8,12 @@ interface PaymentModalProps {
     isOpen: boolean;
     onClose: () => void;
     planName: string;
-    planPrice: string;
+    planPrice: string | number;
+    appointmentId?: string;
+    title?: string;
 }
 
-export function PaymentModal({ isOpen, onClose, planName, planPrice }: PaymentModalProps) {
+export function PaymentModal({ isOpen, onClose, planName, planPrice, appointmentId, title = "Confirmar Pago" }: PaymentModalProps) {
     const [method, setMethod] = useState<'mp' | 'transfer' | null>(null);
     const [copied, setCopied] = useState(false);
 
@@ -64,8 +66,8 @@ export function PaymentModal({ isOpen, onClose, planName, planPrice }: PaymentMo
                     {/* Header */}
                     <div className="bg-slate-50 p-6 flex justify-between items-center border-b border-gray-100">
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 font-serif">Confirmar Pago</h3>
-                            <p className="text-sm text-gray-500">Plan Seleccionado: <span className="text-fuchsia-600 font-bold">{planName}</span></p>
+                            <h3 className="text-xl font-bold text-gray-900 font-serif">{title}</h3>
+                            <p className="text-sm text-gray-500">Item: <span className="text-fuchsia-600 font-bold">{planName}</span></p>
                         </div>
                         <button onClick={onClose} className="p-2 hover:bg-white rounded-full transition-colors text-gray-400 hover:text-gray-900 border border-transparent hover:border-gray-200">
                             <X size={20} />
@@ -73,9 +75,25 @@ export function PaymentModal({ isOpen, onClose, planName, planPrice }: PaymentMo
                     </div>
 
                     <div className="p-8 overflow-y-auto">
+                        {appointmentId && !method && (
+                            <div className="mb-8 p-6 bg-fuchsia-50 rounded-3xl border border-fuchsia-100 flex items-start gap-4">
+                                <div className="p-2 bg-fuchsia-100 rounded-xl text-fuchsia-600">
+                                    <CheckCircle2 size={24} />
+                                </div>
+                                <div className="space-y-1">
+                                    <h4 className="font-bold text-fuchsia-900">¡Cita agendada!</h4>
+                                    <p className="text-sm text-fuchsia-700 leading-relaxed">
+                                        Tu hora ha sido reservada, pero para confirmarla y validarla definitivamente, debes contratar uno de nuestros <strong>Planes Nutricionales</strong>.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
                         {!method ? (
                             <div className="space-y-4">
-                                <p className="text-center text-gray-600 mb-6 font-medium">Selecciona tu método de pago preferido</p>
+                                <p className="text-center text-gray-600 mb-6 font-medium">
+                                    {appointmentId ? "¿Con qué plan deseas asegurar tu cita?" : "Selecciona tu método de pago preferido"}
+                                </p>
 
                                 <button
                                     onClick={() => setMethod('mp')}

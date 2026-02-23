@@ -9,6 +9,7 @@ import { appointmentService, Appointment } from '../services/appointmentService'
 import { configService } from '../services/configService';
 import { createClient } from '@/utils/supabase/client';
 import type { User } from '@supabase/supabase-js';
+import { PaymentModal } from './PaymentModal';
 import 'react-day-picker/dist/style.css';
 
 // Custom styles to match the design system (Fuchsia Premium theme)
@@ -61,6 +62,8 @@ export function CalendarWidget() {
     const [bookingTime, setBookingTime] = useState('');
     const [availableSlots, setAvailableSlots] = useState<string[]>([]);
     const [availabilityConfig, setAvailabilityConfig] = useState<any>(null);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [lastApptId, setLastApptId] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -129,8 +132,24 @@ export function CalendarWidget() {
                 duration_minutes: 60,
                 notes: "Consulta General",
             });
-            setAppointments([...appointments, newAppt]);
-            alert('¡Cita agendada con éxito!');
+
+            setLastApptId(newAppt.id);
+            setAppointments(prev => [...prev, newAppt]);
+
+            const supabase = createClient();
+            // Verificar si el usuario tiene un plan activo
+            const { data: profile } = await supabase
+                .from('perfiles')
+                .select('plan_id')
+                .eq('user_id', user.id)
+                .single();
+
+            if (!profile?.plan_id) {
+                // Si no tiene plan, abrimos el modal informando que debe elegir uno
+                setIsPaymentModalOpen(true);
+            } else {
+                alert('¡Cita agendada con éxito!');
+            }
         } catch (error: any) {
             console.error(error);
             alert(`Error al agendar la cita: ${error.message || 'Inténtalo nuevamente.'}`);
@@ -221,6 +240,15 @@ export function CalendarWidget() {
                     </div>
                 )}
             </div>
+
+            <PaymentModal
+                isOpen={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                title="Asegura tu cita nutricional"
+                planName={`Consulta: ${selectedDate ? format(selectedDate, 'dd/MM') : ''} ${bookingTime}`}
+                planPrice={35000} // Precio base de consulta, ajustable
+                appointmentId={lastApptId}
+            />
         </div>
     );
 }

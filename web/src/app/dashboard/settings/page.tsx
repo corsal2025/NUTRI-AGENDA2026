@@ -6,10 +6,14 @@ import { useEffect, useState } from "react";
 import { Save, Clock, CreditCard, CheckCircle } from "lucide-react";
 import { configService, Plan, AppConfig } from "@/services/configService";
 import { createClient } from "@/utils/supabase/client";
+import clsx from "clsx";
 
 export default function SettingsPage() {
     const [plans, setPlans] = useState<Plan[]>([]);
-    const [availability, setAvailability] = useState<any>({});
+    const [availability, setAvailability] = useState<any>({
+        monday: [], tuesday: [], wednesday: [], thursday: [], friday: [], saturday: [], sunday: []
+    });
+    const [selectedDayTab, setSelectedDayTab] = useState("monday");
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -53,10 +57,31 @@ export default function SettingsPage() {
         setPlans(newPlans);
     };
 
-    const handleAvailabilityUpdate = (day: string, slotsString: string) => {
-        const slots = slotsString.split(',').map(s => s.trim()).filter(s => s);
-        setAvailability({ ...availability, [day]: slots });
+    const toggleTimeSlot = (day: string, slot: string) => {
+        setAvailability((prev: any) => {
+            const currentSlots = prev[day] || [];
+            const newSlots = currentSlots.includes(slot)
+                ? currentSlots.filter((s: string) => s !== slot)
+                : [...currentSlots, slot].sort();
+            return { ...prev, [day]: newSlots };
+        });
     };
+
+    const timeSlots = [
+        "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+        "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+        "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"
+    ];
+
+    const daysOfWeek = [
+        { id: "monday", label: "Lun" },
+        { id: "tuesday", label: "Mar" },
+        { id: "wednesday", label: "Mié" },
+        { id: "thursday", label: "Jue" },
+        { id: "friday", label: "Vie" },
+        { id: "saturday", label: "Sáb" },
+        { id: "sunday", label: "Dom" }
+    ];
 
     const saveChanges = async () => {
         setSaving(true);
@@ -138,28 +163,7 @@ export default function SettingsPage() {
                     </div>
                 </section>
 
-                {/* Availability Configuration */}
-                <section className="bg-white p-6 rounded-3xl shadow-sm border border-fuchsia-100">
-                    <h2 className="text-xl font-bold text-fuchsia-700 mb-4 flex items-center gap-2">
-                        <Clock size={20} /> Disponibilidad Horaria Semanal
-                    </h2>
-                    <p className="text-sm text-gray-500 mb-4">Ingresa las horas disponibles separadas por coma (ej: 09:00, 10:00, 15:30).</p>
 
-                    <div className="grid md:grid-cols-2 gap-4">
-                        {days.map(day => (
-                            <div key={day} className="p-3 border border-gray-100 rounded-2xl">
-                                <label className="block text-sm font-bold text-gray-700 mb-2 capitalize">{dayLabels[day]}</label>
-                                <input
-                                    type="text"
-                                    value={(availability[day] || []).join(', ')}
-                                    onChange={(e) => handleAvailabilityUpdate(day, e.target.value)}
-                                    placeholder="Ej: 09:00, 10:00, 11:00"
-                                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-sm"
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </section>
             </div>
 
             {/* Save Button */}
