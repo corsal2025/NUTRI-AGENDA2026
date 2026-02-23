@@ -153,80 +153,98 @@ export default function AdminAgendaPage() {
                         </h2>
                     </div>
 
-                    {citasDelDia.length > 0 ? (
-                        <div className="space-y-4">
-                            {citasDelDia.map(cita => (
-                                <div key={cita.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col md:flex-row gap-6 relative overflow-hidden">
-                                    {/* Indicador de estado */}
-                                    <div className={`absolute left-0 top-0 bottom-0 w-2 ${cita.estado_pago === 'pagado' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                    <div className="space-y-4">
+                        {(() => {
+                            const dailySlots = [];
+                            for (let i = 8; i <= 18; i++) {
+                                const hour = i.toString().padStart(2, '0');
+                                dailySlots.push(`${hour}:00`);
+                                dailySlots.push(`${hour}:30`);
+                            }
 
-                                    <div className="flex flex-col justify-center items-center px-4 md:border-r border-gray-100 shrink-0">
-                                        <p className="text-3xl font-black text-gray-900">
-                                            {cita.hora_cita.substring(0, 5)}
-                                        </p>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
-                                            60 MIN
-                                        </p>
-                                    </div>
+                            return dailySlots.map((slot) => {
+                                const cita = citasDelDia.find((c) => c.hora_cita && c.hora_cita.startsWith(slot));
 
-                                    <div className="flex-grow space-y-3">
-                                        <div className="flex justify-between items-start">
-                                            <div>
-                                                <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                                    <Users size={18} className="text-fuchsia-500" />
-                                                    {cita.perfiles?.nombre_completo || 'Paciente'}
-                                                </h4>
-                                                <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
-                                                    {cita.perfiles?.email || cita.id_paciente}
+                                if (cita) {
+                                    return (
+                                        <div key={cita.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col md:flex-row gap-6 relative overflow-hidden">
+                                            <div className={`absolute left-0 top-0 bottom-0 w-2 ${cita.estado_pago === 'pagado' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+
+                                            <div className="flex flex-col justify-center items-center px-4 md:border-r border-gray-100 shrink-0">
+                                                <p className="text-3xl font-black text-gray-900">
+                                                    {slot}
+                                                </p>
+                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                                                    60 MIN
                                                 </p>
                                             </div>
-                                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${cita.estado_pago === 'pagado'
-                                                ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                                                : 'bg-amber-50 text-amber-600 border border-amber-100'
-                                                }`}>
-                                                {cita.estado_pago}
-                                            </span>
-                                        </div>
 
-                                        <div className="flex gap-2 pt-2 items-center">
-                                            {cita.link_reunion && (
-                                                <a href={cita.link_reunion} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-bold hover:bg-indigo-100 transition-colors">
-                                                    <Video size={14} /> Meet
-                                                </a>
-                                            )}
-                                            <button className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors">
-                                                <FileText size={14} /> Ficha Médica
-                                            </button>
+                                            <div className="flex-grow space-y-3">
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                                            <Users size={18} className="text-fuchsia-500" />
+                                                            {cita.perfiles?.nombre_completo || 'Paciente'}
+                                                        </h4>
+                                                        <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
+                                                            {cita.perfiles?.email || cita.id_paciente}
+                                                        </p>
+                                                    </div>
+                                                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${cita.estado_pago === 'pagado'
+                                                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                                                        : 'bg-amber-50 text-amber-600 border border-amber-100'
+                                                        }`}>
+                                                        {cita.estado_pago}
+                                                    </span>
+                                                </div>
 
-                                            <div className="ml-auto px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis">
-                                                <span className="font-medium text-gray-400">Agendado por:</span> Administración
+                                                <div className="flex gap-2 pt-2 items-center">
+                                                    {cita.link_reunion && (
+                                                        <a href={cita.link_reunion} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-bold hover:bg-indigo-100 transition-colors">
+                                                            <Video size={14} /> Meet
+                                                        </a>
+                                                    )}
+                                                    <button className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors">
+                                                        <FileText size={14} /> Ficha Médica
+                                                    </button>
+
+                                                    <div className="ml-auto px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis">
+                                                        <span className="font-medium text-gray-400">Agendado por:</span> Administración
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center justify-center shrink-0">
+                                                <button className="h-12 w-12 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-fuchsia-600 group-hover:text-white transition-all">
+                                                    <ChevronRight size={20} />
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-center shrink-0">
-                                        <button className="h-12 w-12 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-fuchsia-600 group-hover:text-white transition-all">
-                                            <ChevronRight size={20} />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="py-20 flex flex-col items-center justify-center bg-white rounded-[3rem] border border-dashed border-gray-200">
-                            <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 shadow-sm border border-slate-100 mb-4">
-                                <CheckCircle size={32} />
-                            </div>
-                            <h4 className="text-gray-900 font-bold text-lg">Día Despejado</h4>
-                            <p className="text-gray-500 text-sm mt-1">No hay citas programadas para esta fecha.</p>
-                            <button
-                                onClick={() => setIsModalOpen(true)}
-                                className="mt-6 px-6 py-2 bg-fuchsia-50 text-fuchsia-600 font-bold rounded-xl hover:bg-fuchsia-100 transition"
-                            >
-                                Agendar una ahora
-                            </button>
-                        </div>
-                    )}
+                                    );
+                                } else {
+                                    // Empty slot
+                                    return (
+                                        <div key={slot} className="flex items-center opacity-60 hover:opacity-100 transition-opacity pl-2">
+                                            <div className="w-20 text-right pr-6 md:border-r border-gray-200">
+                                                <p className="text-lg font-bold text-gray-400">{slot}</p>
+                                            </div>
+                                            <div className="flex-grow pl-6 py-3">
+                                                <div className="flex items-center justify-between bg-gray-50/50 border border-dashed border-gray-200 p-4 rounded-3xl">
+                                                    <p className="text-gray-400 font-medium text-sm">Disponible</p>
+                                                    <button
+                                                        onClick={() => setIsModalOpen(true)}
+                                                        className="text-xs font-bold bg-white border border-gray-200 text-gray-500 px-4 py-2 rounded-xl hover:text-fuchsia-600 hover:border-fuchsia-200 hover:bg-fuchsia-50 transition-colors"
+                                                    >
+                                                        Agendar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                            });
+                        })()}
+                    </div>
                 </div>
             </div>
 
