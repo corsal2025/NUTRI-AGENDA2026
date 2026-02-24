@@ -154,100 +154,84 @@ export default function AdminAgendaPage() {
                     </div>
 
                     <div className="space-y-4">
-                        {(() => {
-                            const dailySlots = [];
-                            for (let i = 8; i <= 18; i++) {
-                                const hour = i.toString().padStart(2, '0');
-                                dailySlots.push(`${hour}:00`);
-                            }
+                        {citasDelDia.length > 0 ? (
+                            citasDelDia.map((cita) => (
+                                <div key={cita.id} className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group flex flex-col md:flex-row gap-6 relative overflow-hidden">
+                                    <div className={`absolute left-0 top-0 bottom-0 w-2.5 ${cita.estado_pago === 'pagado' ? 'bg-emerald-400' : 'bg-rose-400 animate-pulse'}`} />
 
-                            return dailySlots.map((slot) => {
-                                const cita = citasDelDia.find((c) => c.hora_cita && c.hora_cita.startsWith(slot));
+                                    <div className="flex flex-col justify-center items-center px-4 md:border-r border-gray-100 shrink-0">
+                                        <p className="text-3xl font-black text-gray-900 tracking-tight">
+                                            {cita.hora_cita?.slice(0, 5) || '00:00'}
+                                        </p>
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1.5 bg-gray-50 px-2 py-0.5 rounded-lg">
+                                            {cita.duracion_minutes || 60} MIN
+                                        </p>
+                                    </div>
 
-                                if (cita) {
-                                    return (
-                                        <div key={cita.id} className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group flex flex-col md:flex-row gap-6 relative overflow-hidden">
-                                            <div className={`absolute left-0 top-0 bottom-0 w-2.5 ${cita.estado_pago === 'pagado' ? 'bg-emerald-400' : 'bg-rose-400 animate-pulse'}`} />
-
-                                            <div className="flex flex-col justify-center items-center px-4 md:border-r border-gray-100 shrink-0">
-                                                <p className="text-3xl font-black text-gray-900 tracking-tight">
-                                                    {slot}
-                                                </p>
-                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1.5 bg-gray-50 px-2 py-0.5 rounded-lg">
-                                                    60 MIN
+                                    <div className="flex-grow space-y-4">
+                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                            <div className="space-y-1">
+                                                <h4 className="text-xl font-black text-gray-900 flex items-center gap-2.5">
+                                                    <div className="size-8 rounded-full bg-fuchsia-100 text-fuchsia-600 flex items-center justify-center text-xs font-black">
+                                                        {cita.perfiles?.nombre_completo?.charAt(0) || 'P'}
+                                                    </div>
+                                                    {cita.perfiles?.nombre_completo || 'Paciente sin nombre'}
+                                                </h4>
+                                                <p className="text-sm text-gray-500 font-medium flex items-center gap-2 pl-10">
+                                                    <Clock size={14} className="text-gray-300" />
+                                                    Cita confirmada • {cita.perfiles?.email || 'Sin correo registrado'}
                                                 </p>
                                             </div>
 
-                                            <div className="flex-grow space-y-4">
-                                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                                    <div className="space-y-1">
-                                                        <h4 className="text-xl font-black text-gray-900 flex items-center gap-2.5">
-                                                            <div className="size-8 rounded-full bg-fuchsia-100 text-fuchsia-600 flex items-center justify-center text-xs font-black">
-                                                                {cita.perfiles?.nombre_completo?.charAt(0) || 'P'}
-                                                            </div>
-                                                            {cita.perfiles?.nombre_completo || 'Paciente sin nombre'}
-                                                        </h4>
-                                                        <p className="text-sm text-gray-500 font-medium flex items-center gap-2 pl-10">
-                                                            <Clock size={14} className="text-gray-300" />
-                                                            Cita confirmada • {cita.perfiles?.email || 'Sin correo registrado'}
-                                                        </p>
-                                                    </div>
-
-                                                    <div className="flex flex-col items-end gap-2">
-                                                        <span className={`px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-wider shadow-sm border ${cita.estado_pago === 'pagado'
-                                                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                                            : 'bg-rose-50 text-rose-700 border-rose-200 ring-2 ring-rose-100'
-                                                            }`}>
-                                                            {cita.estado_pago === 'pagado' ? '💰 Pagado' : '🔔 Pendiente de Pago'}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex flex-wrap gap-2 pt-2 items-center">
-                                                    {cita.link_reunion && (
-                                                        <a href={cita.link_reunion} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-bold hover:bg-indigo-100 transition-colors shadow-sm border border-indigo-100">
-                                                            <Video size={14} /> Entrar a Videollamada
-                                                        </a>
-                                                    )}
-                                                    <button className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors border border-slate-100">
-                                                        <FileText size={14} /> Ver Ficha Clínica
-                                                    </button>
-                                                    <div className="md:ml-auto px-3 py-1 bg-gray-50 border border-gray-100 rounded-lg text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
-                                                        ID: {cita.id.slice(0, 8)}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="hidden md:flex items-center justify-center shrink-0">
-                                                <button className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-fuchsia-600 group-hover:text-white transition-all shadow-sm group-hover:shadow-lg group-hover:shadow-fuchsia-200">
-                                                    <ChevronRight size={24} />
-                                                </button>
+                                            <div className="flex flex-col items-end gap-2">
+                                                <span className={`px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-wider shadow-sm border ${cita.estado_pago === 'pagado'
+                                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                                    : 'bg-rose-50 text-rose-700 border-rose-200 ring-2 ring-rose-100'
+                                                    }`}>
+                                                    {cita.estado_pago === 'pagado' ? '💰 Pagado' : '🔔 Pendiente de Pago'}
+                                                </span>
                                             </div>
                                         </div>
-                                    );
-                                } else {
-                                    // Empty slot
-                                    return (
-                                        <div key={slot} className="flex items-center opacity-60 hover:opacity-100 transition-opacity pl-2">
-                                            <div className="w-20 text-right pr-6 md:border-r border-gray-200">
-                                                <p className="text-lg font-bold text-gray-400">{slot}</p>
-                                            </div>
-                                            <div className="flex-grow pl-6 py-3">
-                                                <div className="flex items-center justify-between bg-gray-50/50 border border-dashed border-gray-200 p-4 rounded-3xl">
-                                                    <p className="text-gray-400 font-medium text-sm">Disponible</p>
-                                                    <button
-                                                        onClick={() => setIsModalOpen(true)}
-                                                        className="text-xs font-bold bg-white border border-gray-200 text-gray-500 px-4 py-2 rounded-xl hover:text-fuchsia-600 hover:border-fuchsia-200 hover:bg-fuchsia-50 transition-colors"
-                                                    >
-                                                        Agendar
-                                                    </button>
-                                                </div>
+
+                                        <div className="flex flex-wrap gap-2 pt-2 items-center">
+                                            {cita.link_reunion && (
+                                                <a href={cita.link_reunion} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-bold hover:bg-indigo-100 transition-colors shadow-sm border border-indigo-100">
+                                                    <Video size={14} /> Entrar a Videollamada
+                                                </a>
+                                            )}
+                                            <button className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors border border-slate-100">
+                                                <FileText size={14} /> Ver Ficha Clínica
+                                            </button>
+                                            <div className="md:ml-auto px-3 py-1 bg-gray-50 border border-gray-100 rounded-lg text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
+                                                ID: {cita.id.slice(0, 8)}
                                             </div>
                                         </div>
-                                    );
-                                }
-                            });
-                        })()}
+                                    </div>
+
+                                    <div className="hidden md:flex items-center justify-center shrink-0">
+                                        <button className="h-14 w-14 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-fuchsia-600 group-hover:text-white transition-all shadow-sm group-hover:shadow-lg group-hover:shadow-fuchsia-200">
+                                            <ChevronRight size={24} />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="flex flex-col items-center justify-center py-20 px-6 bg-gray-50/50 border border-dashed border-gray-200 rounded-[3rem] text-center space-y-4">
+                                <div className="size-16 bg-white rounded-full flex items-center justify-center shadow-sm">
+                                    <Calendar className="text-gray-300" size={32} />
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-lg font-bold text-gray-400">Sin citas para este día</p>
+                                    <p className="text-sm text-gray-400/80 max-w-xs">No hay consultas programadas para esta fecha. ¡Es un buen momento para organizar tus tareas!</p>
+                                </div>
+                                <button
+                                    onClick={() => setIsModalOpen(true)}
+                                    className="px-6 py-2 bg-white border border-gray-200 text-fuchsia-600 font-bold rounded-xl hover:bg-fuchsia-50 hover:border-fuchsia-200 transition-all shadow-sm"
+                                >
+                                    + Agendar Cita Nueva
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
