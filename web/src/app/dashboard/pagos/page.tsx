@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Star, Zap, CreditCard, ShieldCheck, Globe, Trophy } from "lucide-react";
+import { Check, Star, Zap, CreditCard, ShieldCheck, Globe, Trophy, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { PaymentModal } from "@/components/PaymentModal";
@@ -42,92 +42,69 @@ export default function PagosPage() {
 
     return (
         <div className="p-4 lg:p-8 space-y-12 max-w-7xl mx-auto pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {/* Header ... */}
             <header className="text-center space-y-4 mb-16">
-                <h1 className="text-5xl font-bold font-serif text-gray-900">Inversión en Salud</h1>
+                <h1 className="text-5xl font-bold font-serif text-gray-900">Medios de Pago</h1>
                 <p className="text-gray-500 font-medium max-w-2xl mx-auto text-lg leading-relaxed">
-                    Accede a herramientas avanzadas de nutrición clínica y deportiva con nuestros planes de suscripción profesional.
+                    Gestiona tus pagos de forma segura a través de nuestras plataformas principales.
                 </p>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-                {plans.map((plan, index) => (
-                    <motion.div
-                        key={plan.name}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.1 }}
-                        className={`relative rounded-[3rem] p-10 flex flex-col transition-all border ${plan.popular
-                            ? 'bg-white border-fuchsia-100 shadow-2xl shadow-fuchsia-100/50 scale-105 z-10'
-                            : 'bg-white border-gray-100 shadow-sm hover:shadow-xl'
-                            }`}
-                    >
-                        {/* ... content ... */}
-                        {plan.popular && (
-                            <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-fuchsia-600 text-white px-6 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-fuchsia-200 flex items-center gap-2">
-                                <Star className="size-3 fill-white" /> Recomendado
-                            </div>
-                        )}
-
-                        <div className="mb-10 text-center">
-                            <div className={`size-16 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-sm border ${plan.color === 'fuchsia' ? 'bg-fuchsia-50 text-fuchsia-600 border-fuchsia-100' :
-                                plan.color === 'indigo' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' :
-                                    'bg-slate-50 text-slate-500 border-slate-100'
-                                }`}>
-                                <plan.icon size={32} />
-                            </div>
-                            <h3 className="text-2xl font-bold text-gray-900 font-serif mb-2 uppercase tracking-tight">{plan.name}</h3>
-                            <div className="flex items-baseline justify-center gap-1">
-                                <span className="text-4xl font-black text-gray-900">{plan.price}</span>
-                                {plan.subtitle && <span className="text-gray-400 font-bold text-xs">{plan.subtitle}</span>}
-                            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
+                {/* Mercado Libre / Mercado Pago Container */}
+                <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="relative rounded-[3rem] p-10 flex flex-col transition-all border bg-white border-[#009EE3]/20 shadow-xl shadow-[#009EE3]/5 hover:shadow-2xl"
+                >
+                    <div className="mb-8 text-center">
+                        <div className="size-20 rounded-[2rem] bg-[#009EE3]/10 flex items-center justify-center mx-auto mb-6 border border-[#009EE3]/20">
+                            <CreditCard size={40} className="text-[#009EE3]" />
                         </div>
-
-                        <ul className="space-y-5 mb-12 flex-grow">
-                            {plan.features.map((feature) => (
-                                <li key={feature} className="flex items-start gap-4">
-                                    <div className={`mt-1 size-5 rounded-full flex items-center justify-center shrink-0 ${plan.color === 'fuchsia' ? 'bg-fuchsia-100 text-fuchsia-600' : 'bg-slate-100 text-slate-400'
-                                        }`}>
-                                        <Check className="size-3" strokeWidth={3} />
-                                    </div>
-                                    <span className="text-sm font-medium text-gray-600 leading-tight">
-                                        {feature}
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-
-                        <button
-                            onClick={() => setSelectedPlan({ name: plan.name, price: plan.price })}
-                            className={`w-full py-5 px-6 rounded-3xl font-black text-xs uppercase tracking-[0.1em] transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg ${plan.color === 'fuchsia'
-                                ? 'bg-fuchsia-600 text-white shadow-fuchsia-100 hover:bg-fuchsia-700'
-                                : 'bg-gray-900 text-white shadow-gray-100 hover:bg-black'
-                                }`}>
-                            SELECCIONAR PLAN
-                        </button>
-                    </motion.div>
-                ))}
-            </div>
-
-            <div className="mt-16 bg-slate-50 rounded-[2.5rem] p-8 md:p-12 border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-10">
-                {/* ... existing footer content ... */}
-                <div className="flex items-start gap-6">
-                    <div className="size-16 rounded-[2rem] bg-white shadow-sm flex items-center justify-center text-emerald-600 shrink-0 border border-emerald-50">
-                        <ShieldCheck size={32} />
-                    </div>
-                    <div>
-                        <h4 className="text-xl font-bold text-gray-900 font-serif">Procesamiento Seguro</h4>
-                        <p className="text-gray-500 text-sm mt-1 max-w-sm">
-                            Tus transacciones están protegidas por encriptación bancaria de grado médico. Aceptamos Visa, MasterCard y Webpay.
+                        <h3 className="text-2xl font-bold text-gray-900 font-serif mb-2">Mercado Libre</h3>
+                        <p className="text-sm text-gray-500 leading-relaxed">
+                            Pago seguro con Tarjetas de Crédito, Débito y Webpay.
                         </p>
                     </div>
+                    <button
+                        onClick={() => setSelectedPlan({ name: 'Pago General', price: 'Link Personalizado' })}
+                        className="mt-auto w-full py-5 px-6 rounded-3xl font-black text-xs uppercase tracking-[0.1em] transition-all transform hover:scale-[1.02] bg-[#009EE3] text-white shadow-lg shadow-[#009EE3]/20 hover:bg-[#0081B8]"
+                    >
+                        PAGAR CON MERCADO LIBRE
+                    </button>
+                </motion.div>
+
+                {/* Transferencia Container */}
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="relative rounded-[3rem] p-10 flex flex-col transition-all border bg-white border-slate-200 shadow-xl shadow-slate-100/50 hover:shadow-2xl"
+                >
+                    <div className="mb-8 text-center">
+                        <div className="size-20 rounded-[2rem] bg-slate-50 flex items-center justify-center mx-auto mb-6 border border-slate-100">
+                            <Building2 size={40} className="text-slate-700" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-900 font-serif mb-2">Transferencia</h3>
+                        <p className="text-sm text-gray-500 leading-relaxed">
+                            Depósito directo a nuestra cuenta corriente profesional.
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => setSelectedPlan({ name: 'Transferencia Directa', price: 'Datos Bancarios' })}
+                        className="mt-auto w-full py-5 px-6 rounded-3xl font-black text-xs uppercase tracking-[0.1em] transition-all transform hover:scale-[1.02] bg-gray-900 text-white shadow-lg shadow-gray-200 hover:bg-black"
+                    >
+                        VER DATOS BANCARIOS
+                    </button>
+                </motion.div>
+            </div>
+
+            <div className="mt-16 bg-slate-50 rounded-[2.5rem] p-8 border border-gray-100 text-center max-w-2xl mx-auto">
+                <div className="flex items-center justify-center gap-4 text-emerald-600 mb-2">
+                    <ShieldCheck size={24} />
+                    <span className="font-bold uppercase tracking-widest text-[10px]">Transacción 100% Segura</span>
                 </div>
-                <div className="flex items-center gap-6 saturate-0 opacity-40 hover:saturate-100 hover:opacity-100 transition-all">
-                    <div className="h-8 w-12 bg-gray-300 rounded-md" />
-                    <div className="h-8 w-12 bg-gray-400 rounded-md" />
-                    <div className="h-8 w-12 bg-gray-300 rounded-md" />
-                    <CreditCard className="size-8 text-gray-400" />
-                </div>
+                <p className="text-gray-500 text-sm italic">
+                    "Si necesitas un link de pago por un monto específico, no dudes en solicitarlo por interno."
+                </p>
             </div>
 
             <PaymentModal
@@ -135,7 +112,7 @@ export default function PagosPage() {
                 onClose={() => setSelectedPlan(null)}
                 planName={selectedPlan?.name || ''}
                 planPrice={selectedPlan?.price || ''}
-                title="Contratar Plan Nutricional"
+                title="Selecciona Detalle de Pago"
             />
         </div>
     );

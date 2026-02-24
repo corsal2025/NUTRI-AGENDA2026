@@ -18,12 +18,12 @@ export function PaymentModal({ isOpen, onClose, planName, planPrice, appointment
     const [copied, setCopied] = useState(false);
 
     const bankDetails = {
-        bank: "Banco Santander",
-        account: "12.345.678-9",
-        type: "Cuenta Corriente",
-        rut: "15.678.901-2",
+        bank: "Banco Estado",
+        account: "22.656.262-6",
+        type: "Cuenta Rut / Vista",
+        rut: "22.656.262-6",
         name: "Verónica Amaya",
-        email: "contacto@nutriveronica.cl"
+        email: "veronica.amaya@nutricionista.cl"
     };
 
     const handleCopy = () => {
@@ -103,7 +103,7 @@ export function PaymentModal({ isOpen, onClose, planName, planPrice, appointment
                                         <CreditCard size={28} />
                                     </div>
                                     <div className="text-left">
-                                        <h4 className="text-lg font-bold text-[#009EE3]">Mercado Pago</h4>
+                                        <h4 className="text-lg font-bold text-[#009EE3]">Mercado Libre</h4>
                                         <p className="text-sm text-gray-500 leading-tight mt-1">Tarjetas de Crédito, Débito y Webpay. Pago seguro inmediato.</p>
                                     </div>
                                 </button>
@@ -127,9 +127,9 @@ export function PaymentModal({ isOpen, onClose, planName, planPrice, appointment
                                     <CreditCard size={40} />
                                 </div>
                                 <div>
-                                    <h4 className="text-2xl font-bold text-gray-900 font-serif mb-2">Pago con Mercado Pago</h4>
+                                    <h4 className="text-2xl font-bold text-gray-900 font-serif mb-2">Pago con Mercado Libre</h4>
                                     <p className="text-gray-500 mb-8">
-                                        Para garantizar la seguridad de tu transacción, generaremos un link de pago único para ti asociado a tu plan.
+                                        Generaremos un link de pago seguro a través de Mercado Libre / Mercado Pago para tu plan.
                                     </p>
                                 </div>
                                 <button
