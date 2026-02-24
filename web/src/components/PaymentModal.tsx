@@ -1,8 +1,9 @@
 "use client";
 
 import { X, CreditCard, Building2, Copy, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { configService } from "@/services/configService";
 
 interface PaymentModalProps {
     isOpen: boolean;
@@ -17,14 +18,22 @@ export function PaymentModal({ isOpen, onClose, planName, planPrice, appointment
     const [method, setMethod] = useState<'mp' | 'transfer' | null>(null);
     const [copied, setCopied] = useState(false);
 
-    const bankDetails = {
+    const [bankDetails, setBankDetails] = useState({
         bank: "Banco Estado",
         account: "22.656.262-6",
         type: "Cuenta Rut / Vista",
         rut: "22.656.262-6",
         name: "Verónica Amaya",
         email: "veronica.amaya@nutricionista.cl"
-    };
+    });
+
+    useEffect(() => {
+        if (isOpen) {
+            configService.getConfig('bank_details').then(data => {
+                if (data) setBankDetails(data);
+            });
+        }
+    }, [isOpen]);
 
     const handleCopy = () => {
         const text = `Banco: ${bankDetails.bank}\nCuenta: ${bankDetails.account}\nTipo: ${bankDetails.type}\nRUT: ${bankDetails.rut}\nNombre: ${bankDetails.name}\nEmail: ${bankDetails.email}`;
