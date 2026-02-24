@@ -34,7 +34,7 @@ export default function DashboardPage() {
                 const { data: p } = await supabase
                     .from('perfiles')
                     .select('*')
-                    .eq('user_id', user.id)
+                    .eq('id', user.id)
                     .single();
                 setProfile(p);
 
@@ -49,6 +49,14 @@ export default function DashboardPage() {
                 if (evals && evals.length > 0) {
                     setStats(evals[0]);
                 }
+            } else {
+                // Si no hay usuario (acceso libre), cargamos datos del admin por defecto
+                const { data: p } = await supabase
+                    .from('perfiles')
+                    .select('*')
+                    .eq('rol', 'admin')
+                    .single();
+                setProfile(p);
             }
             setDataLoading(false);
         }

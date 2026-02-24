@@ -37,6 +37,20 @@ export default function ProfilePage() {
                 } else {
                     setProfile({ id: user.id, email: user.email, rol: "paciente" });
                 }
+            } else {
+                // Si no hay usuario (acceso sin clave), buscamos el perfil de Raúl (admin) por defecto
+                const { data, error } = await supabase
+                    .from("perfiles")
+                    .select("*")
+                    .eq("rol", "admin")
+                    .single();
+
+                if (data) {
+                    setProfile(data);
+                } else {
+                    // Fallback extremo si ni el admin existe
+                    setProfile({ nombre_completo: "Administrador", rol: "admin" });
+                }
             }
             setLoading(false);
         }
