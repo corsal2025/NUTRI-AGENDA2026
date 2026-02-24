@@ -55,6 +55,12 @@ export default function DashboardPage() {
         loadData();
     }, []);
 
+    useEffect(() => {
+        if (!loading && !dataLoading && role === 'admin') {
+            router.replace('/dashboard/agenda');
+        }
+    }, [role, loading, dataLoading, router]);
+
     if (loading || dataLoading) return (
         <div className="flex items-center justify-center min-h-[60vh]">
             <div className="flex flex-col items-center gap-4">
@@ -67,9 +73,6 @@ export default function DashboardPage() {
     );
 
     if (role === 'admin') {
-        if (typeof window !== "undefined") {
-            router.push('/dashboard/agenda');
-        }
         return <div className="p-8 text-center text-gray-500">Redirigiendo a la agenda...</div>;
     }
 
