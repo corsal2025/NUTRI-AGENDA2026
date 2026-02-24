@@ -48,7 +48,7 @@ export function Sidebar() {
         },
         {
             icon: CreditCard,
-            label: "Pagos y Finanzas",
+            label: "Pagos",
             href: "/dashboard/pagos",
             adminOnly: true
         },

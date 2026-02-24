@@ -8,12 +8,12 @@ import {
     User, Mail, Phone, Camera, Save, MapPin, Briefcase, Calendar,
     Clock, ChevronRight, Target, TrendingUp, Activity, Heart,
     Stethoscope, Moon, Droplets, Cigarette, Beer, History, Pill, Scissors, Baby, Settings, ShieldCheck,
-    CreditCard, Lock
+    CreditCard, Lock, Building2
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NextImage from "next/image";
-import { configService, Plan } from "@/services/configService";
+import { configService, Plan, AppConfig } from "@/services/configService";
 import clsx from "clsx";
 
 export default function ProfilePage() {
@@ -87,6 +87,14 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
     const [selectedDayTab, setSelectedDayTab] = useState("monday");
 
     const [plans, setPlans] = useState<Plan[]>([]);
+    const [bankDetails, setBankDetails] = useState<AppConfig['bank_details']>({
+        bank: "",
+        account: "",
+        type: "",
+        rut: "",
+        name: "",
+        email: ""
+    });
 
     const daysOfWeek = [
         { id: "monday", label: "Lun" }, { id: "tuesday", label: "Mar" }, { id: "wednesday", label: "Mié" },
@@ -112,6 +120,9 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
 
             const plansData = await configService.getPlans();
             if (plansData) setPlans(plansData);
+
+            const bankData = await configService.getConfig('bank_details');
+            if (bankData) setBankDetails(bankData);
 
             // Si el perfil de admin no tiene su nombre, le ponemos los datos de Verónica por defecto para ayudar al onboarding
             if (!profile.nombre_completo || profile.nombre_completo === "Admin Nutri-Agenda") {
@@ -148,6 +159,7 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                 await Promise.all(plans.map(plan => configService.updatePlan(plan.id, plan)));
             }
             await configService.updateConfig('availability', availability);
+            await configService.updateConfig('bank_details', bankDetails);
 
 
 
@@ -387,6 +399,71 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                                                         </div>
                                                     </div>
                                                 ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Datos Bancarios para Pagos */}
+                                        <div className="pt-8 border-t border-slate-100 space-y-6">
+                                            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2 text-indigo-600">
+                                                <Building2 size={18} /> Datos para Transferencias
+                                            </h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-indigo-50/30 p-8 rounded-[2.5rem] border border-indigo-100/50">
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Banco</label>
+                                                    <input
+                                                        type="text"
+                                                        value={bankDetails.bank}
+                                                        onChange={(e) => setBankDetails({ ...bankDetails, bank: e.target.value })}
+                                                        className="w-full p-3 bg-white border border-indigo-100 rounded-xl text-sm font-bold text-gray-700 focus:border-indigo-500 outline-none"
+                                                        placeholder="Ej: Banco Estado"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[10_px] font-black uppercase tracking-widest text-indigo-400">Tipo de Cuenta</label>
+                                                    <input
+                                                        type="text"
+                                                        value={bankDetails.type}
+                                                        onChange={(e) => setBankDetails({ ...bankDetails, type: e.target.value })}
+                                                        className="w-full p-3 bg-white border border-indigo-100 rounded-xl text-sm font-bold text-gray-700 focus:border-indigo-500 outline-none"
+                                                        placeholder="Ej: Cuenta Rut"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Número de Cuenta</label>
+                                                    <input
+                                                        type="text"
+                                                        value={bankDetails.account}
+                                                        onChange={(e) => setBankDetails({ ...bankDetails, account: e.target.value })}
+                                                        className="w-full p-3 bg-white border border-indigo-100 rounded-xl text-sm font-bold text-gray-700 focus:border-indigo-500 outline-none"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">RUT Titular</label>
+                                                    <input
+                                                        type="text"
+                                                        value={bankDetails.rut}
+                                                        onChange={(e) => setBankDetails({ ...bankDetails, rut: e.target.value })}
+                                                        className="w-full p-3 bg-white border border-indigo-100 rounded-xl text-sm font-bold text-gray-700 focus:border-indigo-500 outline-none"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Nombre Titular</label>
+                                                    <input
+                                                        type="text"
+                                                        value={bankDetails.name}
+                                                        onChange={(e) => setBankDetails({ ...bankDetails, name: e.target.value })}
+                                                        className="w-full p-3 bg-white border border-indigo-100 rounded-xl text-sm font-bold text-gray-700 focus:border-indigo-500 outline-none"
+                                                    />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400">Email Confirmación</label>
+                                                    <input
+                                                        type="email"
+                                                        value={bankDetails.email}
+                                                        onChange={(e) => setBankDetails({ ...bankDetails, email: e.target.value })}
+                                                        className="w-full p-3 bg-white border border-indigo-100 rounded-xl text-sm font-bold text-gray-700 focus:border-indigo-500 outline-none"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
