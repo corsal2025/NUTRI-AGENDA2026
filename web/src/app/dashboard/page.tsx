@@ -22,6 +22,7 @@ export default function DashboardPage() {
     const [profile, setProfile] = useState<any>(null);
     const [stats, setStats] = useState<any>(null);
     const [dataLoading, setDataLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         async function loadData() {
@@ -66,7 +67,10 @@ export default function DashboardPage() {
     );
 
     if (role === 'admin') {
-        return <ProfessionalDashboard profile={profile} stats={stats} />;
+        if (typeof window !== "undefined") {
+            router.push('/dashboard/agenda');
+        }
+        return <div className="p-8 text-center text-gray-500">Redirigiendo a la agenda...</div>;
     }
 
     return <PatientDashboard profile={profile} stats={stats} />;

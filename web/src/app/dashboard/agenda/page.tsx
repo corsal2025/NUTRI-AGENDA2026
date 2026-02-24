@@ -159,9 +159,6 @@ export default function AdminAgendaPage() {
                             for (let i = 8; i <= 18; i++) {
                                 const hour = i.toString().padStart(2, '0');
                                 dailySlots.push(`${hour}:00`);
-                                if (i !== 18) {
-                                    dailySlots.push(`${hour}:30`);
-                                }
                             }
 
                             return dailySlots.map((slot) => {
@@ -298,7 +295,6 @@ function NewAppointmentModal({ onClose, patients, availabilityConfig, onSuccess 
         for (let i = 8; i <= 18; i++) {
             const hour = i.toString().padStart(2, '0');
             slots.push(`${hour}:00`);
-            slots.push(`${hour}:30`);
         }
         return slots;
     };

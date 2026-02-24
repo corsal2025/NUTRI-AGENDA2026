@@ -41,9 +41,10 @@ export function Sidebar() {
     const menuItems: MenuItem[] = [
         { icon: User, label: isAdmin ? "Perfil" : "Mi Ficha Clínica", href: "/dashboard/profile" },
         {
-            icon: isAdmin ? LayoutDashboard : TrendingUp,
-            label: isAdmin ? "Panel Principal" : "Mi Evolución",
-            href: "/dashboard"
+            icon: TrendingUp,
+            label: "Mi Evolución",
+            href: "/dashboard",
+            patientOnly: true
         },
         {
             icon: HeartPulse,
