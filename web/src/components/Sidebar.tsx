@@ -41,11 +41,24 @@ export function Sidebar() {
     const menuItems: MenuItem[] = [
         { icon: User, label: isAdmin ? "Perfil" : "Mi Ficha Clínica", href: "/dashboard/profile" },
         {
+            icon: ShieldCheck,
+            label: "Planes de Atención",
+            href: "/dashboard/planes",
+            adminOnly: true
+        },
+        {
+            icon: CreditCard,
+            label: "Pagos y Finanzas",
+            href: "/dashboard/pagos",
+            adminOnly: true
+        },
+        {
             icon: TrendingUp,
             label: "Mi Evolución",
             href: "/dashboard",
             patientOnly: true
         },
+        { icon: CalendarDays, label: "Agenda", href: "/dashboard/agenda" },
         {
             icon: HeartPulse,
             label: "Evaluación",
@@ -63,9 +76,7 @@ export function Sidebar() {
             label: "Estadísticas",
             href: "/dashboard/statistics",
             adminOnly: true
-        },
-        { icon: CalendarDays, label: "Agenda", href: "/dashboard/agenda" },
-        { icon: CreditCard, label: "Pagos y Planes", href: "/dashboard/pagos" }
+        }
     ];
 
     // Filtrar items según rol
