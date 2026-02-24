@@ -65,13 +65,7 @@ export function Sidebar() {
             adminOnly: true
         },
         { icon: CalendarDays, label: "Agenda", href: "/dashboard/agenda" },
-        { icon: CreditCard, label: "Pagos y Planes", href: "/dashboard/pagos" },
-        {
-            icon: Settings,
-            label: "Configuración",
-            href: "/dashboard/settings",
-            adminOnly: true
-        },
+        { icon: CreditCard, label: "Pagos y Planes", href: "/dashboard/pagos" }
     ];
 
     // Filtrar items según rol

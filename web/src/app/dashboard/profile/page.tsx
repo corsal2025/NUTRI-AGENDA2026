@@ -7,12 +7,13 @@ import { useRouter } from "next/navigation";
 import {
     User, Mail, Phone, Camera, Save, MapPin, Briefcase, Calendar,
     Clock, ChevronRight, Target, TrendingUp, Activity, Heart,
-    Stethoscope, Moon, Droplets, Cigarette, Beer, History, Pill, Scissors, Baby, Settings, ShieldCheck
+    Stethoscope, Moon, Droplets, Cigarette, Beer, History, Pill, Scissors, Baby, Settings, ShieldCheck,
+    CreditCard, Lock
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NextImage from "next/image";
-import { configService } from "@/services/configService";
+import { configService, Plan } from "@/services/configService";
 import clsx from "clsx";
 
 export default function ProfilePage() {
@@ -71,6 +72,11 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
     });
     const [selectedDayTab, setSelectedDayTab] = useState("monday");
 
+    const [plans, setPlans] = useState<Plan[]>([]);
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [pwdMsg, setPwdMsg] = useState({ text: "", type: "" });
+
     const daysOfWeek = [
         { id: "monday", label: "Lun" }, { id: "tuesday", label: "Mar" }, { id: "wednesday", label: "Mié" },
         { id: "thursday", label: "Jue" }, { id: "friday", label: "Vie" }
@@ -88,9 +94,12 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
     };
 
     useEffect(() => {
-        async function fetchAvail() {
+        async function fetchAvailAndPlans() {
             const availData = await configService.getConfig('availability');
             if (availData) setAvailability(availData);
+
+            const plansData = await configService.getPlans();
+            if (plansData) setPlans(plansData);
 
             // Si el perfil de admin no tiene su nombre, le ponemos los datos de Verónica por defecto para ayudar al onboarding
             if (!profile.nombre_completo || profile.nombre_completo === "Admin Nutri-Agenda") {
@@ -103,11 +112,12 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                 }));
             }
         }
-        fetchAvail();
+        fetchAvailAndPlans();
     }, []);
 
     const handleSave = async () => {
         setSaving(true);
+        setPwdMsg({ text: "", type: "" });
         try {
             const supabase = createClient();
 
@@ -123,14 +133,36 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
 
             if (pError) throw pError;
 
+            if (plans.length > 0) {
+                await Promise.all(plans.map(plan => configService.updatePlan(plan.id, plan)));
+            }
             await configService.updateConfig('availability', availability);
-            alert("Perfil y agenda actualizados correctamente");
+
+            if (newPassword) {
+                if (newPassword !== confirmPassword) {
+                    setPwdMsg({ text: "Las contraseñas no coinciden", type: "error" });
+                    return;
+                }
+                const { error: pwdError } = await supabase.auth.updateUser({ padding: undefined, password: newPassword } as any);
+                if (pwdError) throw pwdError;
+                setPwdMsg({ text: "Contraseña actualizada exitosamente", type: "success" });
+                setNewPassword("");
+                setConfirmPassword("");
+            }
+
+            alert("Perfil y configuración actualizados correctamente");
         } catch (error: any) {
             console.error(error);
             alert("Error al actualizar: " + error.message);
         } finally {
             setSaving(false);
         }
+    };
+
+    const handlePlanUpdate = (index: number, field: keyof Plan, value: any) => {
+        const newPlans = [...plans];
+        newPlans[index] = { ...newPlans[index], [field]: value };
+        setPlans(newPlans);
     };
 
     const toggleTimeSlot = (day: string, slot: string) => {
@@ -166,6 +198,7 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                     <div className="flex p-2 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-x-auto no-scrollbar">
                         <TabButton id="personal" active={activeTab} onClick={setActiveTab} icon={User} label="Información General" />
                         <TabButton id="availability" active={activeTab} onClick={setActiveTab} icon={Calendar} label="Gestión de Agenda" />
+                        <TabButton id="settings" active={activeTab} onClick={setActiveTab} icon={Settings} label="Configuración" />
                     </div>
 
                     <div className="bg-white p-8 md:p-12 rounded-[3.5rem] border border-gray-100 shadow-sm space-y-12 relative overflow-hidden min-h-[500px]">
@@ -292,6 +325,100 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                                             </div>
                                             <div className="bg-slate-50 rounded-2xl p-6 text-center border border-dashed border-slate-200">
                                                 <p className="text-sm text-gray-400 italic">Próximamente: Historial de bloqueos excepcionales activos.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+                            {activeTab === 'settings' && (
+                                <motion.div key="settings" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-10">
+                                    <div className="border-l-4 border-fuchsia-500 pl-6 space-y-1">
+                                        <h2 className="text-2xl font-bold text-gray-900 font-serif">Configuración del Sistema</h2>
+                                        <p className="text-gray-400 font-medium text-sm">Gestiona planes de precios y seguridad de tu cuenta.</p>
+                                    </div>
+
+                                    <div className="space-y-8">
+                                        {/* Seguridad / Contraseña */}
+                                        <div className="pt-4 space-y-6">
+                                            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                                <Lock size={18} className="text-fuchsia-500" /> Seguridad
+                                            </h3>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nueva Contraseña</label>
+                                                    <input
+                                                        type="password"
+                                                        value={newPassword}
+                                                        onChange={(e) => setNewPassword(e.target.value)}
+                                                        className="w-full px-5 py-4 rounded-2xl bg-white border border-gray-200 outline-none focus:border-fuchsia-500 transition-all font-bold text-sm text-gray-800"
+                                                        placeholder="Opcional..."
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Confirmar Contraseña</label>
+                                                    <input
+                                                        type="password"
+                                                        value={confirmPassword}
+                                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                                        className="w-full px-5 py-4 rounded-2xl bg-white border border-gray-200 outline-none focus:border-fuchsia-500 transition-all font-bold text-sm text-gray-800"
+                                                        placeholder="Opcional..."
+                                                    />
+                                                </div>
+                                                {pwdMsg.text && (
+                                                    <div className={`md:col-span-2 text-xs font-bold ${pwdMsg.type === 'error' ? 'text-rose-500' : 'text-emerald-500'}`}>
+                                                        {pwdMsg.text}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Planes y Precios */}
+                                        <div className="pt-8 border-t border-slate-100 space-y-6">
+                                            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                                <CreditCard size={18} className="text-fuchsia-500" /> Planes de Atención
+                                            </h3>
+
+                                            <div className="space-y-4">
+                                                {plans.map((plan, index) => (
+                                                    <div key={plan.id} className="p-6 border border-gray-100 rounded-[2rem] bg-slate-50 flex flex-wrap gap-4 items-start shadow-sm hover:border-fuchsia-200 transition-colors">
+                                                        <div className="flex-1 min-w-[200px] space-y-1">
+                                                            <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Nombre del Plan</label>
+                                                            <input
+                                                                type="text"
+                                                                value={plan.name}
+                                                                onChange={(e) => handlePlanUpdate(index, 'name', e.target.value)}
+                                                                className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 outline-none focus:border-fuchsia-500"
+                                                            />
+                                                        </div>
+                                                        <div className="w-32 space-y-1">
+                                                            <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">P. Visible</label>
+                                                            <input
+                                                                type="text"
+                                                                value={plan.price_display}
+                                                                onChange={(e) => handlePlanUpdate(index, 'price_display', e.target.value)}
+                                                                className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 outline-none focus:border-fuchsia-500"
+                                                            />
+                                                        </div>
+                                                        <div className="w-32 space-y-1">
+                                                            <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">P. Real</label>
+                                                            <input
+                                                                type="number"
+                                                                value={plan.price}
+                                                                onChange={(e) => handlePlanUpdate(index, 'price', Number(e.target.value))}
+                                                                className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 outline-none focus:border-fuchsia-500"
+                                                            />
+                                                        </div>
+                                                        <div className="w-full basis-full space-y-1">
+                                                            <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Descripción</label>
+                                                            <textarea
+                                                                value={plan.description || ''}
+                                                                onChange={(e) => handlePlanUpdate(index, 'description', e.target.value)}
+                                                                className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-600 resize-none outline-none focus:border-fuchsia-500"
+                                                                rows={2}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </div>
                                     </div>
