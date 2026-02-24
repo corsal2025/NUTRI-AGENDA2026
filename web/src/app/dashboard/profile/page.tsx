@@ -90,7 +90,8 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
 
     const daysOfWeek = [
         { id: "monday", label: "Lun" }, { id: "tuesday", label: "Mar" }, { id: "wednesday", label: "Mié" },
-        { id: "thursday", label: "Jue" }, { id: "friday", label: "Vie" }
+        { id: "thursday", label: "Jue" }, { id: "friday", label: "Vie" }, { id: "saturday", label: "Sáb" },
+        { id: "sunday", label: "Dom" }
     ];
 
     // Horas pedidas: todas de 8 a 20 horas (intervalos normales)
