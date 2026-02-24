@@ -275,35 +275,6 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                                         <p className="text-gray-400 font-medium text-sm">Configura los bloques de atención haciendo clic en cada horario.</p>
                                     </div>
 
-                                    {/* Selector de Horarios Personalizados */}
-                                    <div className="bg-fuchsia-50/50 p-6 rounded-[2rem] border border-fuchsia-100 flex flex-wrap items-center gap-4">
-                                        <div>
-                                            <p className="text-[10px] font-black text-fuchsia-600 uppercase tracking-widest mb-2 ml-1">Administrar Bloques Visibles</p>
-                                            <div className="flex flex-wrap gap-2">
-                                                <select
-                                                    onChange={(e) => {
-                                                        const newVal = e.target.value;
-                                                        if (newVal && !timeSlots.includes(newVal)) {
-                                                            setTimeSlots(prev => [...prev, newVal].sort());
-                                                        }
-                                                    }}
-                                                    className="bg-white border border-fuchsia-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 outline-none focus:ring-2 focus:ring-fuchsia-500/20"
-                                                >
-                                                    <option value="">+ Añadir Bloque de Tiempo</option>
-                                                    {allPossibleTimeSlots.filter(s => !timeSlots.includes(s)).map(s => (
-                                                        <option key={s} value={s}>{s}</option>
-                                                    ))}
-                                                </select>
-                                                <button
-                                                    onClick={() => setTimeSlots(["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"])}
-                                                    className="text-[10px] font-bold text-gray-400 hover:text-fuchsia-600 transition-colors uppercase tracking-tight"
-                                                >
-                                                    Resetear Estándar
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <div className="space-y-6">
                                         <div className="overflow-x-auto rounded-[2.5rem] border border-slate-100 shadow-sm bg-white">
                                             <table className="w-full border-collapse">
