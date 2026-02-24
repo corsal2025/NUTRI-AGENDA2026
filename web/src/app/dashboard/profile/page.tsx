@@ -304,76 +304,82 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                                         </div>
                                     </div>
 
-                                    <div className="space-y-8">
-                                        <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 p-2 bg-slate-50 rounded-3xl border border-slate-100">
-                                            {daysOfWeek.map((day) => (
-                                                <button
-                                                    key={day.id}
-                                                    onClick={() => setSelectedDayTab(day.id)}
-                                                    className={clsx(
-                                                        "flex-1 flex gap-1 items-center justify-center py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all",
-                                                        selectedDayTab === day.id ? "bg-white text-fuchsia-600 shadow-sm ring-1 ring-slate-200" : "text-gray-400 hover:text-gray-600"
-                                                    )}
-                                                >
-                                                    {day.label}
-                                                    {availability[day.id]?.length > 0 && <span className="size-1.5 rounded-full bg-fuchsia-500 block" />}
-                                                </button>
-                                            ))}
+                                    <div className="space-y-6">
+                                        <div className="overflow-x-auto rounded-[2.5rem] border border-slate-100 shadow-sm bg-white">
+                                            <table className="w-full border-collapse">
+                                                <thead>
+                                                    <tr className="bg-slate-50/50">
+                                                        <th className="p-4 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100 sticky left-0 bg-slate-50 z-20 w-24">Horario</th>
+                                                        {daysOfWeek.map(day => (
+                                                            <th key={day.id} className="p-4 text-[10px] font-black uppercase tracking-widest text-slate-600 border-b border-slate-100 min-w-[100px]">
+                                                                {day.label}
+                                                            </th>
+                                                        ))}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {timeSlots.map((slot) => (
+                                                        <tr key={slot} className="group hover:bg-fuchsia-50/10 transition-colors">
+                                                            <td className="p-3 text-center border-b border-slate-50 sticky left-0 bg-white group-hover:bg-fuchsia-50/20 z-10">
+                                                                <span className="text-[11px] font-black text-slate-500 bg-slate-100/50 px-2 py-1 rounded-lg">{slot}</span>
+                                                            </td>
+                                                            {daysOfWeek.map(day => {
+                                                                const isActive = availability[day.id]?.includes(slot);
+                                                                return (
+                                                                    <td key={`${day.id}-${slot}`} className="p-1 border-b border-slate-50 text-center">
+                                                                        <button
+                                                                            onClick={() => toggleTimeSlot(day.id, slot)}
+                                                                            className={clsx(
+                                                                                "w-full py-3 rounded-xl text-[10px] font-bold transition-all border",
+                                                                                isActive
+                                                                                    ? "bg-[#c026d3] border-[#c026d3] text-white shadow-sm shadow-fuchsia-100"
+                                                                                    : "bg-transparent border-transparent text-slate-300 hover:border-fuchsia-100 hover:text-fuchsia-400"
+                                                                            )}
+                                                                        >
+                                                                            {isActive ? "ACTIVO" : "—"}
+                                                                        </button>
+                                                                    </td>
+                                                                );
+                                                            })}
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
                                         </div>
 
-                                        {availability[selectedDayTab]?.length > 0 ? (
-                                            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                                                {timeSlots.map((slot) => {
-                                                    const isActive = availability[selectedDayTab]?.includes(slot);
+                                        <div className="flex flex-wrap gap-4 items-center justify-between p-6 bg-emerald-50/30 rounded-[2.5rem] border border-emerald-100">
+                                            <div className="flex gap-4 items-center">
+                                                <div className="size-10 rounded-2xl bg-white flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100">
+                                                    <Clock size={20} />
+                                                </div>
+                                                <div className="space-y-0.5">
+                                                    <p className="text-sm font-bold text-emerald-900">Vista de Grilla Activa</p>
+                                                    <p className="text-[11px] text-emerald-600 font-medium">Haz clic en un bloque para activar o desactivar la disponibilidad.</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                {daysOfWeek.map(day => {
+                                                    const hasSelected = availability[day.id]?.length > 0;
                                                     return (
                                                         <button
-                                                            key={slot}
-                                                            onClick={() => toggleTimeSlot(selectedDayTab, slot)}
+                                                            key={day.id}
+                                                            onClick={() => {
+                                                                setAvailability((prev: any) => ({
+                                                                    ...prev,
+                                                                    [day.id]: hasSelected ? [] : [...timeSlots]
+                                                                }));
+                                                            }}
+                                                            title={`Activar/Desactivar todo el ${day.label}`}
                                                             className={clsx(
-                                                                "py-4 px-2 rounded-2xl text-xs font-bold border transition-all",
-                                                                isActive
-                                                                    ? "bg-[#c026d3] border-[#c026d3] text-white shadow-md shadow-fuchsia-200/50"
-                                                                    : "bg-white border-gray-100 text-gray-400 hover:border-fuchsia-200"
+                                                                "px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-tight transition-all border",
+                                                                hasSelected ? "bg-fuchsia-600 border-fuchsia-600 text-white" : "bg-white border-slate-200 text-slate-400"
                                                             )}
                                                         >
-                                                            {slot}
+                                                            {day.label}
                                                         </button>
                                                     );
                                                 })}
                                             </div>
-                                        ) : (
-                                            <div className="py-20 flex flex-col items-center justify-center bg-slate-50 rounded-[3rem] border border-dashed border-slate-200 relative">
-                                                <div className="size-16 rounded-full bg-white flex items-center justify-center text-slate-300 shadow-sm border border-slate-100 mb-4">
-                                                    <Clock size={32} />
-                                                </div>
-                                                <h4 className="text-gray-900 font-bold">Día Desactivado</h4>
-                                                <p className="text-gray-400 text-xs mt-1">Actívalo para asignar horarios.</p>
-                                            </div>
-                                        )}
-
-                                        <div className="flex items-center justify-between p-6 bg-fuchsia-50/30 rounded-[2.5rem] border border-fuchsia-100">
-                                            <div className="space-y-0.5">
-                                                <p className="text-sm font-bold text-fuchsia-900">¿Atiende el {dayLabels[selectedDayTab]}?</p>
-                                                <p className="text-[11px] text-fuchsia-600/70 font-medium">Bloqueará las reservas en este día permanentemente.</p>
-                                            </div>
-                                            <button
-                                                onClick={() => {
-                                                    const isOpen = availability[selectedDayTab]?.length > 0;
-                                                    setAvailability((prev: any) => ({
-                                                        ...prev,
-                                                        [selectedDayTab]: isOpen ? [] : [...timeSlots]
-                                                    }));
-                                                }}
-                                                className={clsx(
-                                                    "relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-300 focus:outline-none",
-                                                    availability[selectedDayTab]?.length > 0 ? "bg-[#c026d3]" : "bg-slate-300"
-                                                )}
-                                            >
-                                                <span className={clsx(
-                                                    "pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition duration-300 mt-0.5 ml-0.5",
-                                                    availability[selectedDayTab]?.length > 0 ? "translate-x-6" : "translate-x-0"
-                                                )} />
-                                            </button>
                                         </div>
 
                                         {/* Bloqueos Excepcionales Placeholder */}
