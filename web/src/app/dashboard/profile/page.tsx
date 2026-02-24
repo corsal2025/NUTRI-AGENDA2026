@@ -102,11 +102,18 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
         { id: "sunday", label: "Dom" }
     ];
 
-    // Horas pedidas: todas de 8 a 20 horas (intervalos normales)
-    const timeSlots = [
+    // Horas disponibles para configurar: de 08:00 a 20:00 cada 30 min
+    const allPossibleTimeSlots = [
+        "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+        "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+        "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"
+    ];
+
+    // Por defecto mostramos de 08:00 a 18:00 si no hay configuración, o los que ella ya tenga elegidos
+    const [timeSlots, setTimeSlots] = useState<string[]>([
         "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
         "16:00", "17:00", "18:00"
-    ];
+    ]);
 
     const dayLabels: { [key: string]: string } = {
         monday: 'Lunes', tuesday: 'Martes', wednesday: 'Miércoles', thursday: 'Jueves',
@@ -133,6 +140,21 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                     ubicacion: "Consulta Online / Presencial",
                     telefono: "+56 9 1234 5678"
                 }));
+            }
+
+            // Actualizar los timeSlots mostrados basados en lo que ella ya tiene guardado
+            // (Si tiene guardado algo fuera del rango 8-18, lo incluimos en la vista)
+            const allSavedSlots = new Set<string>();
+            Object.values(availData || {}).forEach((daySlots: any) => {
+                if (Array.isArray(daySlots)) {
+                    daySlots.forEach(slot => allSavedSlots.add(slot));
+                }
+            });
+
+            if (allSavedSlots.size > 0) {
+                // Combinamos el set estándar con sus slots guardados para que aparezcan en el panel de edición
+                const combined = Array.from(new Set([...timeSlots, ...Array.from(allSavedSlots)])).sort();
+                setTimeSlots(combined);
             }
         }
         fetchAvailAndPlans();
@@ -253,6 +275,35 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                                         <p className="text-gray-400 font-medium text-sm">Configura los bloques de atención haciendo clic en cada horario.</p>
                                     </div>
 
+                                    {/* Selector de Horarios Personalizados */}
+                                    <div className="bg-fuchsia-50/50 p-6 rounded-[2rem] border border-fuchsia-100 flex flex-wrap items-center gap-4">
+                                        <div>
+                                            <p className="text-[10px] font-black text-fuchsia-600 uppercase tracking-widest mb-2 ml-1">Administrar Bloques Visibles</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                <select
+                                                    onChange={(e) => {
+                                                        const newVal = e.target.value;
+                                                        if (newVal && !timeSlots.includes(newVal)) {
+                                                            setTimeSlots(prev => [...prev, newVal].sort());
+                                                        }
+                                                    }}
+                                                    className="bg-white border border-fuchsia-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 outline-none focus:ring-2 focus:ring-fuchsia-500/20"
+                                                >
+                                                    <option value="">+ Añadir Bloque de Tiempo</option>
+                                                    {allPossibleTimeSlots.filter(s => !timeSlots.includes(s)).map(s => (
+                                                        <option key={s} value={s}>{s}</option>
+                                                    ))}
+                                                </select>
+                                                <button
+                                                    onClick={() => setTimeSlots(["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"])}
+                                                    className="text-[10px] font-bold text-gray-400 hover:text-fuchsia-600 transition-colors uppercase tracking-tight"
+                                                >
+                                                    Resetear Estándar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div className="space-y-8">
                                         <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 p-2 bg-slate-50 rounded-3xl border border-slate-100">
                                             {daysOfWeek.map((day) => (
@@ -310,7 +361,7 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                                                     const isOpen = availability[selectedDayTab]?.length > 0;
                                                     setAvailability((prev: any) => ({
                                                         ...prev,
-                                                        [selectedDayTab]: isOpen ? [] : ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"]
+                                                        [selectedDayTab]: isOpen ? [] : [...timeSlots]
                                                     }));
                                                 }}
                                                 className={clsx(
