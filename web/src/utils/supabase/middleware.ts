@@ -45,19 +45,23 @@ export async function updateSession(request: NextRequest) {
         return supabaseResponse
     }
 
-    // Protect Dashboard routes
+    // Protect Dashboard routes - DISABLED AS PER USER REQUEST
+    /*
     if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)
     }
+    */
 
-    // Redirect authenticated users away from Login
+    // Redirect authenticated users away from Login - DISABLED
+    /*
     if (request.nextUrl.pathname === '/login' && user) {
         const url = request.nextUrl.clone()
         url.pathname = '/dashboard'
         return NextResponse.redirect(url)
     }
+    */
 
     return supabaseResponse
 }

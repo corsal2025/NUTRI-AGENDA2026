@@ -73,9 +73,6 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
     const [selectedDayTab, setSelectedDayTab] = useState("monday");
 
     const [plans, setPlans] = useState<Plan[]>([]);
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [pwdMsg, setPwdMsg] = useState({ text: "", type: "" });
 
     const daysOfWeek = [
         { id: "monday", label: "Lun" }, { id: "tuesday", label: "Mar" }, { id: "wednesday", label: "Mié" },
@@ -117,7 +114,6 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
 
     const handleSave = async () => {
         setSaving(true);
-        setPwdMsg({ text: "", type: "" });
         try {
             const supabase = createClient();
 
@@ -138,17 +134,7 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
             }
             await configService.updateConfig('availability', availability);
 
-            if (newPassword) {
-                if (newPassword !== confirmPassword) {
-                    setPwdMsg({ text: "Las contraseñas no coinciden", type: "error" });
-                    return;
-                }
-                const { error: pwdError } = await supabase.auth.updateUser({ padding: undefined, password: newPassword } as any);
-                if (pwdError) throw pwdError;
-                setPwdMsg({ text: "Contraseña actualizada exitosamente", type: "success" });
-                setNewPassword("");
-                setConfirmPassword("");
-            }
+
 
             alert("Perfil y configuración actualizados correctamente");
         } catch (error: any) {
@@ -338,39 +324,6 @@ function AdminProfileView({ profile, setProfile }: { profile: any, setProfile: a
                                     </div>
 
                                     <div className="space-y-8">
-                                        {/* Seguridad / Contraseña */}
-                                        <div className="pt-4 space-y-6">
-                                            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                                <Lock size={18} className="text-fuchsia-500" /> Seguridad
-                                            </h3>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-3xl border border-slate-100">
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nueva Contraseña</label>
-                                                    <input
-                                                        type="password"
-                                                        value={newPassword}
-                                                        onChange={(e) => setNewPassword(e.target.value)}
-                                                        className="w-full px-5 py-4 rounded-2xl bg-white border border-gray-200 outline-none focus:border-fuchsia-500 transition-all font-bold text-sm text-gray-800"
-                                                        placeholder="Opcional..."
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Confirmar Contraseña</label>
-                                                    <input
-                                                        type="password"
-                                                        value={confirmPassword}
-                                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                                        className="w-full px-5 py-4 rounded-2xl bg-white border border-gray-200 outline-none focus:border-fuchsia-500 transition-all font-bold text-sm text-gray-800"
-                                                        placeholder="Opcional..."
-                                                    />
-                                                </div>
-                                                {pwdMsg.text && (
-                                                    <div className={`md:col-span-2 text-xs font-bold ${pwdMsg.type === 'error' ? 'text-rose-500' : 'text-emerald-500'}`}>
-                                                        {pwdMsg.text}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
 
                                         {/* Planes y Precios */}
                                         <div className="pt-8 border-t border-slate-100 space-y-6">

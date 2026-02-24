@@ -23,13 +23,16 @@ export function useUserRole() {
                     if (profile && profile.rol) {
                         setRole(profile.rol as UserRole);
                     } else {
-                        // Fallback: Si no tiene rol, asumimos paciente por seguridad
-                        setRole('paciente');
+                        // Fallback: Si no tiene rol, asumimos admin por facilidad temporal
+                        setRole('admin');
                     }
+                } else {
+                    // Si no hay usuario, forzamos admin para acceso sin clave
+                    setRole('admin');
                 }
             } catch (error) {
                 console.error("Error fetching user role:", error);
-                setRole('paciente'); // Fallback en caso de error
+                setRole('admin'); // Fallback en caso de error
             } finally {
                 setLoading(false);
             }
