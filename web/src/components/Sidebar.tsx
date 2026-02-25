@@ -3,20 +3,15 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { configService } from '@/services/configService';
 import { useUserRole } from '@/hooks/useUserRole';
 import {
-    LayoutDashboard,
     History,
-    BarChart2,
-    Settings,
     User,
     ShieldCheck,
     LogOut,
     CreditCard,
-    ClipboardCheck,
     Instagram,
     Facebook,
     CalendarDays,
@@ -36,7 +31,7 @@ interface MenuItem {
 export function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
-    const { role, isAdmin, isPatient, loading } = useUserRole();
+    const { isAdmin, isPatient } = useUserRole();
 
     const menuItems: MenuItem[] = [
         { icon: User, label: isAdmin ? "Perfil" : "Mi Ficha Clínica", href: "/dashboard/profile" },
@@ -60,21 +55,15 @@ export function Sidebar() {
         },
         { icon: CalendarDays, label: "Agenda", href: "/dashboard/agenda" },
         {
-            icon: HeartPulse,
-            label: "Evaluación",
-            href: "/dashboard/evaluate",
-            adminOnly: true
-        },
-        {
             icon: History,
             label: "Historial Clínico",
             href: "/dashboard/history",
             adminOnly: true
         },
         {
-            icon: BarChart2,
-            label: "Estadísticas",
-            href: "/dashboard/statistics",
+            icon: HeartPulse,
+            label: "Evaluación",
+            href: "/dashboard/evaluate",
             adminOnly: true
         }
     ];
@@ -106,8 +95,6 @@ export function Sidebar() {
         router.push("/login");
     };
 
-    // El filtrado ya se hizo arriba con filteredItems
-
     return (
         <aside className="w-64 bg-white h-[calc(100vh-2rem)] flex flex-col fixed left-4 top-4 bottom-4 rounded-[3rem] z-[100] text-gray-900 shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
             {/* Logo & Profile Section */}
@@ -115,16 +102,15 @@ export function Sidebar() {
                 <div className="flex flex-col items-center gap-4 mb-4">
                     <div className="size-36 flex items-center justify-center">
                         <img
-                            src="/logo-oficial.png"
+                            src={logoUrl || "/logo-oficial.png"}
                             alt="Verónica Amaya - Nutrición y Deporte"
                             className="size-full object-contain"
                             onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'https://placehold.co/200x200?text=Nutri-Agenda';
+                                (e.target as HTMLImageElement).src = '/logo-oficial.png';
                             }}
                         />
                     </div>
                 </div>
-
             </div>
 
             {/* Navigation */}

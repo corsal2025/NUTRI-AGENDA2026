@@ -47,7 +47,6 @@ export function Topbar() {
         { icon: LayoutDashboard, label: "Panel Principal", href: "/dashboard" },
         { icon: HeartPulse, label: "Evaluación", href: "/dashboard/evaluate" },
         { icon: History, label: "Historial Clínico", href: "/dashboard/history" },
-        { icon: BarChart2, label: "Estadísticas", href: "/dashboard/statistics" },
         { icon: CalendarDays, label: "Agenda", href: "/dashboard/agenda" },
         { icon: CreditCard, label: "Pagos y Planes", href: "/dashboard/pagos" },
         { icon: User, label: "Perfil", href: "/dashboard/profile" },

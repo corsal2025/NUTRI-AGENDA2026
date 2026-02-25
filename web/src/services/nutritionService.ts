@@ -131,19 +131,8 @@ const calculateBodyComposition = (
 };
 
 export const nutritionService = {
-    async calculateAndSave(data: AnthropometryData): Promise<AnthropometryResult> {
+    async calculateAndSave(data: AnthropometryData, gender: string = 'F'): Promise<AnthropometryResult> {
         const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-
-        if (!user) {
-            throw new Error('No active session');
-        }
-
-        // Perform Calculations Locally
-        // Determine gender from somewhere? For now defaulting to M or we need to add gender to AnthropometryData if not present.
-        // Assuming 'M' for now as fallback or fetching patient profile. 
-        // Ideally we should have gender in the input data.
-        const gender = 'F'; // Defaulting to Female as context implies "Nutri Verónica" usually treats specific demographics? Or just default.
 
         const somato = calculateSomatotype(
             data.weight, data.height,
@@ -160,14 +149,11 @@ export const nutritionService = {
 
         const resultToSave = {
             ...data,
-            patient_id: user.id, // Saving for the current user (if patient) or we need patient_id passed in.
-            // The interface has patient_id. If the logged in user is the Nutri, she should be passing the patient_id of the patient being evaluated.
-            // If the logged in user IS the patient, then user.id is correct.
-            // Based on context, Nutri uses this form. So `data.patient_id` should be used if present, else user.id.
-            // However, `data` comes from the form.
-
             ...somato,
             ...comp,
+            somatotype_endomorph: somato.endomorph,
+            somatotype_mesomorph: somato.mesomorph,
+            somatotype_ectomorph: somato.ectomorph,
             somatotype_x: somato.x,
             somatotype_y: somato.y
         };
