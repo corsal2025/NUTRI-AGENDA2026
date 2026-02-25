@@ -16,6 +16,8 @@ export default function AdminAgendaPage() {
     const [loading, setLoading] = useState(true);
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [preselectedPatient, setPreselectedPatient] = useState<any>(null);
+    const [sidebarSearchTerm, setSidebarSearchTerm] = useState("");
 
     // Data para el combobox
     const [patients, setPatients] = useState<any[]>([]);
@@ -66,7 +68,7 @@ export default function AdminAgendaPage() {
     async function fetchPatientsAndConfig() {
         const supabase = createClient();
         const { data: pats } = await supabase.from('perfiles').select('*').eq('rol', 'paciente');
-        if (pats) setPatients(pats);
+        if (pats) setPatients(pats || []);
 
         const config = await configService.getConfig('availability');
         if (config) setAvailabilityConfig(config);
@@ -111,36 +113,72 @@ export default function AdminAgendaPage() {
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* Lateral Side: Minimapa Mes / Filtros */}
+                {/* Lateral Side: Lista de Clientes / Calendario */}
                 <div className="lg:col-span-4 space-y-8">
-                    <div className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm">
-                        <h3 className="text-xl font-bold text-gray-900 font-serif mb-6 flex items-center gap-2">
-                            <Calendar className="text-fuchsia-600" /> Resumen de Hoy
-                        </h3>
+                    <div className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm space-y-8">
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 font-serif mb-6 flex items-center gap-2">
+                                <Users className="text-fuchsia-600" /> Mis Clientes
+                            </h3>
 
-                        <div className="flex flex-col gap-4">
-                            <div className="p-6 bg-fuchsia-50/50 rounded-3xl border border-fuchsia-100">
-                                <p className="text-fuchsia-800 text-sm font-bold uppercase tracking-wide">Citas Programadas</p>
-                                <p className="text-4xl font-black text-fuchsia-600 mt-2">{citasDelDia.length}</p>
-                            </div>
-                            <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                                <p className="text-slate-600 text-sm font-bold uppercase tracking-wide">Pendientes de Pago</p>
-                                <p className="text-4xl font-black text-slate-800 mt-2">
-                                    {citasDelDia.filter(c => c.estado_pago === 'pendiente').length}
-                                </p>
-                            </div>
-
-                            <div className="pt-4 border-t border-slate-100 mt-2">
-                                <p className="text-sm font-bold text-gray-600 mb-2">Seleccionar Fecha Rápida:</p>
+                            <div className="relative mb-4">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
                                 <input
-                                    type="date"
-                                    className="w-full p-3 rounded-xl border border-slate-200 text-gray-700"
-                                    value={format(selectedDate, 'yyyy-MM-dd')}
-                                    onChange={(e) => {
-                                        if (e.target.value) setSelectedDate(new Date(e.target.value + 'T00:00:00'));
-                                    }}
+                                    type="text"
+                                    placeholder="Buscar por nombre..."
+                                    className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-fuchsia-100 focus:border-fuchsia-300 outline-none transition-all"
+                                    value={sidebarSearchTerm}
+                                    onChange={(e) => setSidebarSearchTerm(e.target.value)}
                                 />
                             </div>
+
+                            <div className="space-y-3 max-h-[450px] overflow-y-auto pr-2 no-scrollbar">
+                                {patients.length > 0 ? (
+                                    patients.filter(p =>
+                                        p.nombre_completo?.toLowerCase().includes(sidebarSearchTerm.toLowerCase()) ||
+                                        p.email?.toLowerCase().includes(sidebarSearchTerm.toLowerCase())
+                                    ).map((p) => (
+                                        <div key={p.id} className="group p-3 rounded-2xl border border-transparent hover:border-fuchsia-100 hover:bg-fuchsia-50/50 transition-all flex items-center justify-between gap-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="size-8 rounded-full bg-fuchsia-100 text-fuchsia-600 flex items-center justify-center text-xs font-bold">
+                                                    {p.nombre_completo?.charAt(0) || 'P'}
+                                                </div>
+                                                <div className="overflow-hidden">
+                                                    <p className="text-sm font-bold text-gray-800 truncate">{p.nombre_completo}</p>
+                                                    <p className="text-[10px] text-gray-400 font-medium truncate uppercase tracking-tighter">
+                                                        {p.telefono || p.email?.split('@')[0] || 'Cliente'}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    setPreselectedPatient(p);
+                                                    setIsModalOpen(true);
+                                                }}
+                                                className="p-2 bg-white border border-gray-100 rounded-lg text-fuchsia-600 hover:bg-fuchsia-600 hover:text-white transition-all shadow-sm flex items-center gap-1.5 text-[10px] font-black uppercase tracking-tight"
+                                            >
+                                                <Plus size={12} /> Agenda
+                                            </button>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-center text-xs text-gray-400 py-10 border border-dashed border-gray-100 rounded-2xl">
+                                        No hay pacientes registrados
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="pt-8 border-t border-gray-100">
+                            <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-4">Ver otra fecha</h3>
+                            <input
+                                type="date"
+                                className="w-full p-4 rounded-2xl border border-gray-100 bg-gray-50/50 text-gray-700 font-bold focus:ring-2 focus:ring-fuchsia-100 outline-none transition-all"
+                                value={format(selectedDate, 'yyyy-MM-dd')}
+                                onChange={(e) => {
+                                    if (e.target.value) setSelectedDate(new Date(e.target.value + 'T00:00:00'));
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
@@ -239,12 +277,17 @@ export default function AdminAgendaPage() {
             {/* Modal de Nueva Cita */}
             {isModalOpen && (
                 <NewAppointmentModal
-                    onClose={() => setIsModalOpen(false)}
+                    onClose={() => {
+                        setIsModalOpen(false);
+                        setPreselectedPatient(null);
+                    }}
                     patients={patients}
                     availabilityConfig={availabilityConfig}
+                    initialPatient={preselectedPatient}
                     onSuccess={() => {
                         fetchCitas();
                         setIsModalOpen(false);
+                        setPreselectedPatient(null);
                     }}
                 />
             )}
@@ -252,8 +295,8 @@ export default function AdminAgendaPage() {
     );
 }
 
-function NewAppointmentModal({ onClose, patients, availabilityConfig, onSuccess }: any) {
-    const [selectedPatient, setSelectedPatient] = useState<any>(null);
+function NewAppointmentModal({ onClose, patients, availabilityConfig, onSuccess, initialPatient }: any) {
+    const [selectedPatient, setSelectedPatient] = useState<any>(initialPatient || null);
     const [searchTerm, setSearchTerm] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
     const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
